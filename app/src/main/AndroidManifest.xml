@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.administrator.myapplication">
+
+    <!-- 加入应用需要的权限 -->
+    <!-- 网络相关 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- 手机状态 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- sharesdk权限 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- 读写文件 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
+    <!-- 多媒体 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_APN_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:name=".TestXUtils.application.MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_app_bg"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity
+            android:name=".main.HomeActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".calender.CalederActivity"
+            android:label="炫酷日历"
+            android:theme="@android:style/Theme.NoTitleBar"></activity>
+        <activity
+            android:name=".main.DemoActivity"
+            android:label="demo大全"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".weixinPhotoPicker.WeixinPhotoPickerActivity"
+            android:label="炫酷图库"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".crop.CropMasterActivity"
+            android:label="炫酷裁剪"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".WeixinCrop.WeixinCropActivity"
+            android:label="矩阵裁剪"
+            android:theme="@style/AppTheme" />
+        <!-- JellyViewPager -->
+        <activity
+            android:name=".JellyViewPager.JellyViewPagerActivity"
+            android:label="炫酷切图"
+            android:theme="@style/AppTheme" />
+        <!-- JellyViewPager -->
+        <!-- 渐变actionbar -->
+        <!-- 渐变actionbar -->
+        <!-- notBoringactionbar -->
+        <activity
+            android:name=".notboringactionbar.NoBoringActionBarActivity"
+            android:label="@string/noboringactionbar_title"
+            android:theme="@style/TransparentTheme"></activity>
+        <!-- notBoringactionbar -->
+        <!-- pregrssBarDemo-->
+        <activity
+            android:name=".squareprogressbar.demo.ProgerssBarActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Light"></activity>
+
+        <activity
+            android:name=".TestXUtils.activity.X3Activity"
+            android:label="TestXUtils"
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".TestXUtils.activity.FragmentInjectActvity"
+            android:label="@string/title_activity_fragment_inject_actvity"
+            android:theme="@style/AppTheme"></activity>
+        <!-- pregrssBarDemo-->
+        <!--顶部停靠-->
+        <activity
+            android:name=".topfloat.TopFloatActivity"
+            android:label="顶部停靠"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"></activity>
+        <!--顶部停靠-->
+        <!--LoadingView-->
+        <activity
+            android:name=".loadingView.LoadingViewActivity"
+            android:label="LoadingView"
+            android:theme="@style/AppTheme"></activity>
+        <!--LoadingView-->
+        <!-- 仿微信图库 -->
+        <activity
+            android:name=".weixinPhotoPicker.photopicker.PhotoPickerActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/PhotoPickerTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".weixinPhotoPicker.photopicker.PhotoPreviewActivity"
+            android:theme="@style/PhotoPickerTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".weixinPhotoPicker.photopicker.SimplelPhotoPreviewActivity"
+            android:theme="@style/PhotoPickerTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <!-- 仿微信图库 -->
+        <!-- crop_master -->
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <!-- crop_master -->
+        <!-- 仿微信裁剪 -->
+        <activity
+            android:name=".WeixinCrop.crop.ClipImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".WeixinCrop.crop.TakePhotoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <!-- 仿微信裁剪 -->
+    </application>
+
+</manifest>

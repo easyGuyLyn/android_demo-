@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".loadingView.LoadingViewActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleCD
+                android:id="@+id/load_cd"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleSun
+                android:id="@+id/load_sun"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_toRightOf="@+id/load_cd" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleRing
+                android:id="@+id/load_ring"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_toRightOf="@+id/load_sun" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleFace
+                android:id="@+id/load_face"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_cd" />
+
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleJump
+                android:id="@+id/load_jump"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_sun"
+                android:layout_toRightOf="@+id/load_face" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSGears
+                android:id="@+id/load_gear"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_ring"
+                android:layout_toRightOf="@+id/load_jump" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSJump
+                android:id="@+id/load_mjump"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_face" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSMaterialLoading
+                android:id="@+id/load_material"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_mjump" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSGearLoading
+                android:id="@+id/load_gear_loading"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_mjump"
+                android:layout_toRightOf="@+id/load_material" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSLineProgress
+                android:id="@+id/load_line_progress"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_material" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSEatBeans
+                android:id="@+id/load_eat"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_line_progress" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSFiveStar
+                android:id="@+id/load_five"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_jump"
+                android:layout_toRightOf="@+id/load_mjump" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSFiveStar
+                android:id="@+id/load_mfive"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_jump"
+                android:layout_toRightOf="@+id/load_five" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleRise
+                android:id="@+id/load_rise"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_eat" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleBar
+                android:id="@+id/load_bar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_eat"
+                android:layout_toRightOf="@+id/load_rise" />
+
+            <com.example.administrator.myapplication.loadingView.view.WSCircleArc
+                android:id="@+id/load_arc"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/load_eat"
+                android:layout_toRightOf="@+id/load_bar" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

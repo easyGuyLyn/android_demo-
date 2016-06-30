@@ -1,0 +1,41 @@
+<resources>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="item_height">60dp</dimen>
+    <dimen name="item_text_size">25dp</dimen>
+    <dimen name="content_padding">16dp</dimen>
+    <dimen name="content_padding_half">8dp</dimen>
+    <dimen name="historyscore_tb">10dp</dimen>
+    <!--仿微信图库-->
+    <dimen name="folder_padding">10dp</dimen>
+    <dimen name="folder_cover_size">72dp</dimen>
+    <dimen name="image_size">120dp</dimen>
+    <dimen name="space_size">2dp</dimen>
+    <dimen name="action_text_size">16sp</dimen>
+    <dimen name="padding_common">16dp</dimen>
+    <!--仿微信图库-->
+    <dimen name="crop__bar_height">56dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!--notBoringActionBar-->
+    <dimen name="header_height">250dp</dimen>
+    <dimen name="header_logo_size">100dp</dimen>
+    <!--notBoringActionBar-->
+
+    <!-- progeressBar -->
+    <dimen name="lvPrimaryTextSize">18sp</dimen>
+    <dimen name="lvSecondaryTextSize">14sp</dimen>
+    <dimen name="lvItemHeight">65dp</dimen>
+    <dimen name="lvHeadingTextSize">14sp</dimen>
+    <dimen name="lvPrimaryPaddingTop">6dp</dimen>
+    <dimen name="lvPrimaryPaddingBottom">1dp</dimen>
+    <dimen name="lvPrimaryPaddingLeft">8dp</dimen>
+    <dimen name="lvSecondaryPaddingTop">2dp</dimen>
+    <dimen name="lvSecondaryPaddingBottom">6dp</dimen>
+    <dimen name="lvSecondaryPaddingLeft">8dp</dimen>
+    <dimen name="lvDividerHeight">1dp</dimen>
+    <dimen name="lvSectionDividerMarginTop">5dp</dimen>
+    <!-- progeressBar -->
+</resources>
