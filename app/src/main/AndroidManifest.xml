@@ -53,7 +53,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
-        android:name=".TestXUtils.application.MyApplication"
+        android:name=".main.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_app_bg"
         android:label="@string/app_name"
@@ -108,7 +108,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light"></activity>
-
         <activity
             android:name=".TestXUtils.activity.X3Activity"
             android:label="TestXUtils"
@@ -130,6 +129,13 @@
             android:name=".loadingView.LoadingViewActivity"
             android:label="LoadingView"
             android:theme="@style/AppTheme"></activity>
+        <!--LoadingView-->
+        <!--mvc加载更多-->
+        <activity
+            android:name=".mvcHelper.UltraActivity"
+            android:label="加载更多_mvcHelper"
+            android:theme="@style/AppTheme"></activity>
+        <!--mvc加载更多-->
         <!--LoadingView-->
         <!-- 仿微信图库 -->
         <activity
