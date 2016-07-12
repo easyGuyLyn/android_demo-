@@ -132,9 +132,9 @@
         <!--LoadingView-->
         <!--mvc加载更多-->
         <activity
-            android:name=".mvcHelper.UltraActivity"
+            android:name=".mvcHelper.MovieDetailActivity"
             android:label="加载更多_mvcHelper"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
         <!--mvc加载更多-->
         <!--LoadingView-->
         <!-- 仿微信图库 -->

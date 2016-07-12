@@ -14,6 +14,7 @@ import com.example.administrator.myapplication.WeixinCrop.WeixinCropActivity;
 import com.example.administrator.myapplication.calender.CalederActivity;
 import com.example.administrator.myapplication.crop.CropMasterActivity;
 import com.example.administrator.myapplication.loadingView.LoadingViewActivity;
+import com.example.administrator.myapplication.mvcHelper.MovieDetailActivity;
 import com.example.administrator.myapplication.mvcHelper.UltraActivity;
 import com.example.administrator.myapplication.notboringactionbar.NoBoringActionBarActivity;
 import com.example.administrator.myapplication.squareprogressbar.demo.ProgerssBarActivity;
@@ -131,7 +132,7 @@ public class DemoActivity extends AppCompatActivity {
 
     @OnClick(R.id.ll_loadmore)
     public void ll_loadmore() {
-        Intent intent = new Intent(DemoActivity.this, UltraActivity.class);
+        Intent intent = new Intent(DemoActivity.this, MovieDetailActivity.class);
         startActivity(intent);
     }
 

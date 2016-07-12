@@ -21,6 +21,8 @@ import com.example.administrator.myapplication.mvcHelper.mvc.IDataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.HttpUtils;
+
 public class BooksDataSource implements IDataSource<List<Book>>, IDataCacheLoader<List<Book>> {
     private int page = 1;
     private int maxPage = 10;
@@ -38,7 +40,7 @@ public class BooksDataSource implements IDataSource<List<Book>>, IDataCacheLoade
     public List<Book> loadCache(boolean isEmpty) {
         if (isEmpty) {
             List<Book> books = new ArrayList<Book>();
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 200; i++) {
                 books.add(new Book("cache  page 1  Java编程思想 " + i, 108.00d));
             }
             return books;
@@ -58,8 +60,8 @@ public class BooksDataSource implements IDataSource<List<Book>>, IDataCacheLoade
 
     private List<Book> loadBooks(int page) throws Exception {
         // 这里用百度首页模拟网络请求，如果网路出错的话，直接抛异常不会执行后面的获取books的语句
-
-        Thread.sleep(1000);
+        HttpUtils.executeGet("http://www.baidu.com");
+        Thread.sleep(300);
 
         List<Book> books = new ArrayList<Book>();
         for (int i = 0; i < 20; i++) {

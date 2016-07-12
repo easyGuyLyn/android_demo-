@@ -15,6 +15,7 @@ limitations under the License.
  */
 package com.example.administrator.myapplication.mvcHelper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +38,7 @@ import java.util.List;
  *
  * @author LuckyJayce
  */
-public class UltraActivity extends AppCompatActivity {
+public class UltraActivity extends Activity {
     private MVCHelper<List<Book>> mvcHelper;
 
     @Override
