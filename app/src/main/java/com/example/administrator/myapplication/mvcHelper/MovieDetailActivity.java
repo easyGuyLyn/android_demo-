@@ -17,6 +17,7 @@ package com.example.administrator.myapplication.mvcHelper;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -37,7 +38,7 @@ import java.util.List;
  * @author LuckyJayce
  *
  */
-public class MovieDetailActivity extends Activity {
+public class MovieDetailActivity extends AppCompatActivity {
 
 	private MVCHelper<Data3<Movie, List<Discuss>, List<Movie>>> mvcHelper;
 

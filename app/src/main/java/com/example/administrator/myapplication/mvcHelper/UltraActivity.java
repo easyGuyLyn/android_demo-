@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @author LuckyJayce
  */
-public class UltraActivity extends Activity {
+public class UltraActivity extends AppCompatActivity {
     private MVCHelper<List<Book>> mvcHelper;
 
     @Override

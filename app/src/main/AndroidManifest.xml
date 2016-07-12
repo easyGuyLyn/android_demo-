@@ -134,7 +134,11 @@
         <activity
             android:name=".mvcHelper.MovieDetailActivity"
             android:label="加载更多_mvcHelper"
-            android:theme="@android:style/Theme.Light.NoTitleBar"></activity>
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".mvcHelper.UltraActivity"
+            android:label="加载更多_mvcHelper"
+            android:theme="@style/AppTheme"></activity>
         <!--mvc加载更多-->
         <!--LoadingView-->
         <!-- 仿微信图库 -->
