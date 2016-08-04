@@ -133,7 +133,7 @@
                     android:background="@color/colorPrimaryDark"></View>
 
                 <LinearLayout
-                    android:id="@+id/ll_FadingActionBar"
+                    android:id="@+id/ll_EditTextVator"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_height"
                     android:background="@drawable/selector_listview_item"
@@ -143,22 +143,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="small--"
+                        android:text="small--fromEditText"
                         android:textSize="@dimen/item_text_size"
                         android:textStyle="bold" />
-
-                    <com.andreabaccega.widget.FormEditText xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:editTextFormExample="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="请输入您的手机号码"
-                        android:inputType="phone"
-                        android:visibility="gone"
-                        editTextFormExample:emptyErrorString="不能为空！！"
-                        editTextFormExample:testErrorString="格式出错了！！"
-                        editTextFormExample:testType="phone" />
                 </LinearLayout>
 
                 <View

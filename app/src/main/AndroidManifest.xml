@@ -95,6 +95,7 @@
             android:theme="@style/AppTheme" />
         <!-- JellyViewPager -->
         <!-- 渐变actionbar -->
+
         <!-- 渐变actionbar -->
         <!-- notBoringactionbar -->
         <activity
@@ -141,6 +142,17 @@
             android:theme="@style/AppTheme"></activity>
         <!--mvc加载更多-->
         <!--LoadingView-->
+        <!--EditText格式验证-->
+        <activity
+            android:name=".editValtor.EditTextFormExampleActivity"
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".editValtor.LayoutExampleActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".editValtor.EmailOrCreditCard"
+            android:theme="@style/AppTheme" />
+        <!--EditText格式验证-->
         <!-- 仿微信图库 -->
         <activity
             android:name=".weixinPhotoPicker.photopicker.PhotoPickerActivity"

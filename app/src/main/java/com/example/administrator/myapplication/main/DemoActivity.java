@@ -17,6 +17,7 @@ import com.example.administrator.myapplication.TestXUtils.activity.X3Activity;
 import com.example.administrator.myapplication.WeixinCrop.WeixinCropActivity;
 import com.example.administrator.myapplication.calender.CalederActivity;
 import com.example.administrator.myapplication.crop.CropMasterActivity;
+import com.example.administrator.myapplication.editValtor.EditTextFormExampleActivity;
 import com.example.administrator.myapplication.loadingView.LoadingViewActivity;
 import com.example.administrator.myapplication.mvcHelper.MovieDetailActivity;
 import com.example.administrator.myapplication.mvcHelper.UltraActivity;
@@ -39,8 +40,7 @@ public class DemoActivity extends AppCompatActivity {
     protected PtrClassicFrameLayout mPtrFrameLayout;
     @Bind(R.id.container)
     CoordinatorLayout container;//snackbar 容器
-    @Bind(R.id.et)
-    FormEditText et;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +49,6 @@ public class DemoActivity extends AppCompatActivity {
         mPtrFrameLayout = (PtrClassicFrameLayout) findViewById(R.id.material_style_ptr_frame_fragment_main);
         initMaterial();
         onRefresh();
-        et.addValidator(new OrValidator( "This is a phone !",new CreditCardValidator(null), new EmailValidator(null)));
     }
 
     public void initMaterial() {
@@ -93,10 +92,10 @@ public class DemoActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @OnClick(R.id.ll_FadingActionBar)
-    public void FadingActionBar() {
-  /*      Intent intent = new Intent(DemoActivity.this, FadingActionBarActivity.class);
-        startActivity(intent);*/
+    @OnClick(R.id.ll_EditTextVator)
+    public void EditText() {
+        Intent intent = new Intent(DemoActivity.this, EditTextFormExampleActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.ll_NotBoringActionBar)
