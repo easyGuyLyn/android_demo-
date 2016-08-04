@@ -34,4 +34,5 @@ dependencies {
     compile files('libs/clog-1.0.2.jar')
     compile files('libs/xUtils-3.1.14.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.andreabaccega:android-form-edittext:1.2.1'
 }

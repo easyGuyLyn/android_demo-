@@ -7,6 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.andreabaccega.formedittextvalidator.CreditCardValidator;
+import com.andreabaccega.formedittextvalidator.EmailValidator;
+import com.andreabaccega.formedittextvalidator.OrValidator;
+import com.andreabaccega.widget.FormEditText;
 import com.example.administrator.myapplication.JellyViewPager.JellyViewPagerActivity;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.TestXUtils.activity.X3Activity;
@@ -35,7 +39,8 @@ public class DemoActivity extends AppCompatActivity {
     protected PtrClassicFrameLayout mPtrFrameLayout;
     @Bind(R.id.container)
     CoordinatorLayout container;//snackbar 容器
-
+    @Bind(R.id.et)
+    FormEditText et;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,7 @@ public class DemoActivity extends AppCompatActivity {
         mPtrFrameLayout = (PtrClassicFrameLayout) findViewById(R.id.material_style_ptr_frame_fragment_main);
         initMaterial();
         onRefresh();
+        et.addValidator(new OrValidator( "This is a phone !",new CreditCardValidator(null), new EmailValidator(null)));
     }
 
     public void initMaterial() {
