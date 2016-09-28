@@ -27,6 +27,27 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/ll_bluthoon"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_height"
+                    android:background="@drawable/selector_listview_item">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="蓝牙技术"
+                        android:textSize="@dimen/item_text_size"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimaryDark"></View>
+
+                <LinearLayout
                     android:id="@+id/ll_photopicke"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/item_height"
@@ -36,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="photo_picker_asWeixin"
+                        android:text="微信图库"
                         android:textSize="@dimen/item_text_size"
                         android:textStyle="bold" />
 
@@ -57,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="android_crop_master"
+                        android:text="图片裁剪"
                         android:textSize="@dimen/item_text_size"
                         android:textStyle="bold" />
 
@@ -78,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="android_crop_asWeixin"
+                        android:text="微信图片裁剪"
                         android:textSize="@dimen/item_text_size"
                         android:textStyle="bold" />
 
@@ -121,7 +142,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="android_JellyViewPager"
+                        android:text="炫酷图片浏览"
                         android:textSize="@dimen/item_text_size"
                         android:textStyle="bold" />
 
@@ -226,7 +247,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="android_topFloat"
+                        android:text="顶部悬浮"
                         android:textSize="@dimen/item_text_size"
                         android:textStyle="bold" />
 

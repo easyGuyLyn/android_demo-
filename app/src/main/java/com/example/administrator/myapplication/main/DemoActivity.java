@@ -68,6 +68,12 @@ public class DemoActivity extends AppCompatActivity {
         mPtrFrameLayout.setLastUpdateTimeRelateObject(this);
     }
 
+    @OnClick(R.id.ll_bluthoon)
+    public void bluthoon() {
+        Intent intent = new Intent(DemoActivity.this, WeixinPhotoPickerActivity.class);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.ll_photopicke)
     public void picker() {
         Intent intent = new Intent(DemoActivity.this, WeixinPhotoPickerActivity.class);
