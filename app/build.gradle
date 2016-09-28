@@ -35,4 +35,5 @@ dependencies {
     compile files('libs/xUtils-3.1.14.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.andreabaccega:android-form-edittext:1.2.1'
+    compile 'com.alibaba:fastjson:1.2.17'
 }
