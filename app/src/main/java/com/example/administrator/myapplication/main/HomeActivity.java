@@ -25,7 +25,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("技术demo积累");
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_back);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,31 +42,5 @@ public class HomeActivity extends AppCompatActivity {
                         }).show();
             }
         });
-
-        XUtil.Get("http://218.205.115.244:18088/yiqi/api/collect/list/137", null, new MyCallBack<String>() {
-            @Override
-            public void onSuccess(String result) {
-                //可以根据公司的需求进行统一的请求成功的逻辑处理
-                GsonFormatTest bean = JsonUtil.Json2T(result, GsonFormatTest.class);
-                MToastUtils.showMsg(bean.getModel().getList().size() + "", HomeActivity.this);
-                Log.e("lyn", bean.getModel().getList().size() + "");
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                //可以根据公司的需求进行统一的请求网络失败的逻辑处理
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
-
     }
 }

@@ -71,7 +71,7 @@
         <activity
             android:name=".calender.CalederActivity"
             android:label="炫酷日历"
-            android:theme="@android:style/Theme.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".main.DemoActivity"
             android:label="demo大全"
@@ -87,7 +87,7 @@
         <activity
             android:name=".WeixinCrop.WeixinCropActivity"
             android:label="矩阵裁剪"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <!-- JellyViewPager -->
         <activity
             android:name=".JellyViewPager.JellyViewPagerActivity"
@@ -96,63 +96,64 @@
         <!-- JellyViewPager -->
         <!-- 渐变actionbar -->
 
+
         <!-- 渐变actionbar -->
         <!-- notBoringactionbar -->
         <activity
             android:name=".notboringactionbar.NoBoringActionBarActivity"
             android:label="@string/noboringactionbar_title"
-            android:theme="@style/TransparentTheme"></activity>
+            android:theme="@style/TransparentTheme" />
         <!-- notBoringactionbar -->
-        <!-- pregrssBarDemo-->
+        <!-- pregrssBarDemo -->
         <activity
             android:name=".squareprogressbar.demo.ProgerssBarActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light"></activity>
+            android:theme="@android:style/Theme.Holo.Light" />
         <activity
             android:name=".TestXUtils.activity.X3Activity"
             android:label="TestXUtils"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".TestXUtils.activity.FragmentInjectActvity"
             android:label="@string/title_activity_fragment_inject_actvity"
-            android:theme="@style/AppTheme"></activity>
-        <!-- pregrssBarDemo-->
-        <!--顶部停靠-->
+            android:theme="@style/AppTheme" />
+        <!-- pregrssBarDemo -->
+        <!-- 顶部停靠 -->
         <activity
             android:name=".topfloat.TopFloatActivity"
             android:label="顶部停靠"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
-        <!--顶部停靠-->
-        <!--LoadingView-->
+            android:theme="@style/AppTheme" />
+        <!-- 顶部停靠 -->
+        <!-- LoadingView -->
         <activity
             android:name=".loadingView.LoadingViewActivity"
             android:label="LoadingView"
-            android:theme="@style/AppTheme"></activity>
-        <!--LoadingView-->
-        <!--mvc加载更多-->
+            android:theme="@style/AppTheme" />
+        <!-- LoadingView -->
+        <!-- mvc加载更多 -->
         <activity
             android:name=".mvcHelper.MovieDetailActivity"
             android:label="加载更多_mvcHelper"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".mvcHelper.UltraActivity"
             android:label="加载更多_mvcHelper"
-            android:theme="@style/AppTheme"></activity>
-        <!--mvc加载更多-->
-        <!--LoadingView-->
-        <!--EditText格式验证-->
+            android:theme="@style/AppTheme" />
+        <!-- mvc加载更多 -->
+        <!-- LoadingView -->
+        <!-- EditText格式验证 -->
         <activity
             android:name=".editValtor.EditTextFormExampleActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".editValtor.LayoutExampleActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".editValtor.EmailOrCreditCard"
             android:theme="@style/AppTheme" />
-        <!--EditText格式验证-->
+        <!-- EditText格式验证 -->
         <!-- 仿微信图库 -->
         <activity
             android:name=".weixinPhotoPicker.photopicker.PhotoPickerActivity"
@@ -179,12 +180,24 @@
         <activity
             android:name=".WeixinCrop.crop.TakePhotoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <!-- 仿微信裁剪 -->
+
+        <!-- 蓝牙聊天 -->
+        <activity
+            android:name=".BluetoothChat.BluetoothChatActivity"
+            android:label="蓝牙聊天"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+
     </application>
 
 </manifest>
