@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.administrator.myapplication.BluetoothChat.config.CommonViewHolder;
 import com.example.administrator.myapplication.R;
 
 import java.util.List;

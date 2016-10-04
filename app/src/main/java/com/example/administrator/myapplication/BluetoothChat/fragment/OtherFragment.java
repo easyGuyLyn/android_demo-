@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.R;
@@ -24,19 +23,10 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/10/4.
  */
 
-public class SingleChatFragment extends Fragment {
-
-    private View mView;
-    @Bind(R.id.rv_speech)
-    RecyclerView rv_speech;
-    @Bind(R.id.rl_chat_control)
-    RelativeLayout rl_chat_control;
+public class OtherFragment extends Fragment {
 
 
-    private ChatAdapter speechAdapter;
-    private List<String> mData = new ArrayList<>();
-
-    public SingleChatFragment() {
+    public OtherFragment() {
     }
 
     @Override
@@ -47,28 +37,12 @@ public class SingleChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_single_chat, container, false);
-        ButterKnife.bind(this, mView);
-        return mView;
+
+        return null;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        initAdapter();
-        initData();
-    }
-
-    public void initAdapter() {
-        rv_speech.setLayoutManager(new GridLayoutManager(getActivity(), 1));
-        speechAdapter = new ChatAdapter(getActivity(), mData);
-        rv_speech.setAdapter(speechAdapter);
-    }
-
-    public void initData() {
-        for (int i = 0; i < 100; i++) {
-            mData.add("test" + i);
-        }
-        speechAdapter.notifyDataSetChanged();
     }
 
 }

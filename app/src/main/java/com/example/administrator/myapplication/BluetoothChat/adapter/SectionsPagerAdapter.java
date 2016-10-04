@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.administrator.myapplication.BluetoothChat.fragment.OtherFragment;
 import com.example.administrator.myapplication.BluetoothChat.fragment.SingleChatFragment;
 
 /**
@@ -23,7 +24,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
             }
             case 1: {
-                return new SingleChatFragment();
+                return new OtherFragment();
             }
         }
         return null;
@@ -38,9 +39,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "单聊";
+                return "IM";
             case 1:
-                return "群聊";
+                return "开发中...";
         }
         return null;
     }

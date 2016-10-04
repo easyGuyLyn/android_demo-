@@ -1,4 +1,4 @@
-package com.example.administrator.myapplication.BluetoothChat.adapter;
+package com.example.administrator.myapplication.BluetoothChat.config;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
