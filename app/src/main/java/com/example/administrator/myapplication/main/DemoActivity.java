@@ -11,6 +11,7 @@ import com.andreabaccega.formedittextvalidator.CreditCardValidator;
 import com.andreabaccega.formedittextvalidator.EmailValidator;
 import com.andreabaccega.formedittextvalidator.OrValidator;
 import com.andreabaccega.widget.FormEditText;
+import com.example.administrator.myapplication.BluetoothChat.BluetoothChatActivity;
 import com.example.administrator.myapplication.JellyViewPager.JellyViewPagerActivity;
 import com.example.administrator.myapplication.R;
 import com.example.administrator.myapplication.TestXUtils.activity.X3Activity;
@@ -70,7 +71,7 @@ public class DemoActivity extends AppCompatActivity {
 
     @OnClick(R.id.ll_bluthoon)
     public void bluthoon() {
-        Intent intent = new Intent(DemoActivity.this, WeixinPhotoPickerActivity.class);
+        Intent intent = new Intent(DemoActivity.this, BluetoothChatActivity.class);
         startActivity(intent);
     }
 
