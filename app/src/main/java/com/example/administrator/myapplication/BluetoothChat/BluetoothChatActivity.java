@@ -17,6 +17,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class BluetoothChatActivity extends AppCompatActivity {
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
 
     @Bind(R.id.tabs)
     TabLayout tabs;
@@ -83,14 +87,12 @@ public class BluetoothChatActivity extends AppCompatActivity {
 
     /**
      * 设置此时蓝牙的连接状态在副标题上
+     *
      * @param status
      */
     public void setStatus(String status) {
         toolbar.setSubtitle(status);
     }
-
-
-
 
 
     private void finishActivity() {

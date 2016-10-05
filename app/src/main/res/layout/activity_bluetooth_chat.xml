@@ -3,7 +3,8 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ygtext_color_bg_light">
+    android:background="@color/ygtext_color_bg_light"
+    >
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

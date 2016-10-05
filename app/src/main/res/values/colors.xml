@@ -48,4 +48,7 @@
     <color name="secondaryTextColor">#777777</color>
     <color name="lvHeaderDividerColor">#168686</color>
     <color name="lvDividerColor">#FFFFFF</color>
+    <!-- 投影线 -->
+    <color name="colorShadow">#D2D2D2</color>
+    <color name="common_gray">#8C8C8C</color>
 </resources>
