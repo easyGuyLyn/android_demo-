@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.BluetoothChat.blu.BluetoothChatService;
+import com.example.administrator.myapplication.BluetoothChat.config.WaitDialog;
 import com.example.administrator.myapplication.R;
 
 import java.util.ArrayList;
@@ -48,10 +49,12 @@ public class BluetoothChatActivity extends AppCompatActivity {
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
+    public static final int MESSAGE_TOAST_CONNECT_FAIL = 5;
+    public static final int MESSAGE_TOAST_CONNECT_LOST = 6;
 
     // Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
+    public static final String DEVICE_ADDRESS = "device_adress";
     public static final String TOAST = "toast";
 
     // Intent request codes
@@ -64,6 +67,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
     private BluetoothChatService mChatService = null;
+    //最近连接的一个设备
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -93,10 +97,12 @@ public class BluetoothChatActivity extends AppCompatActivity {
     @Bind(R.id.btn_set_mode_voice)
     ImageView btn_set_mode_voice;
 
+    private WaitDialog waitDialog;
     private ChatAdapter speechAdapter;
     private List<String> mData = new ArrayList<>();
     private InputMethodManager imm;
     private Boolean isNeedSrollByItself = true;
+    private Boolean isDestroyed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +147,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
     }
 
     public void setupTask() {
+        waitDialog = new WaitDialog(this);
         mChatService = new BluetoothChatService(this, mHandler);
         rv_speech.setLayoutManager(new GridLayoutManager(this, 1));
         speechAdapter = new ChatAdapter(this, mData);
@@ -152,11 +159,11 @@ public class BluetoothChatActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MESSAGE_STATE_CHANGE:
+                case MESSAGE_STATE_CHANGE://蓝牙连接状态改变后的回调
                     Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
-                            setStatus(getString(R.string.connecttedTo) + mConnectedDeviceName);
+                            setStatus(getString(R.string.connecttedTo) + " " + mConnectedDeviceName);
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
                             setStatus(getString(R.string.connectting));
@@ -167,26 +174,72 @@ public class BluetoothChatActivity extends AppCompatActivity {
                             break;
                     }
                     break;
-                case MESSAGE_WRITE:
+                case MESSAGE_WRITE: //成功发送消息后的回调
                     byte[] writeBuf = (byte[]) msg.obj;
                     String writeMessage = new String(writeBuf);
                     addMsg("Me:  " + writeMessage);
+                    hideKeyboard();
+                    et_sendmessage.setText("");
+                    rv_speech.scrollToPosition(mData.size() - 1);
+                    waitDialog.dismiss();
                     break;
-                case MESSAGE_READ:
+                case MESSAGE_READ: //成功读取消息后的回调
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     addMsg(mConnectedDeviceName + ":  " + readMessage);
                     break;
-                case MESSAGE_DEVICE_NAME:
+                case MESSAGE_DEVICE_NAME://获得连接设备名后的回调
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    ToastUtils.showMsg(getString(R.string.connecttedTo) +  mConnectedDeviceName);
+                    ToastUtils.showMsg(getString(R.string.connecttedTo) + " " + mConnectedDeviceName);
                     break;
-                case MESSAGE_TOAST:
+                case MESSAGE_TOAST_CONNECT_LOST://掉线的回调
+                    ToastUtils.showMsg(msg.getData().getString(TOAST));
+                    String adress = msg.getData().getString(DEVICE_ADDRESS);
+                    BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(adress);
+                    if (!isDestroyed) {
+                        // Start the service over to restart listening mode
+                        mChatService.start();
+                        new TimeThread(device).start();
+                    }
+                    break;
+                case MESSAGE_TOAST_CONNECT_FAIL://连接失败的回调
+                    if (!isDestroyed) {
+                        // Start the service over to restart listening mode
+                        mChatService.start();
+                    }
                     ToastUtils.showMsg(msg.getData().getString(TOAST));
                     break;
             }
         }
     };
+
+    private class TimeThread extends Thread {
+        BluetoothDevice device;
+
+        public TimeThread(BluetoothDevice device) {
+            this.device = device;
+        }
+
+        public void run() {
+            int i = 3;
+            while (i > 0) {
+                final int finalI = i;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showMsg(finalI + "秒后，自动重连...");
+                    }
+                });
+                i--;
+                try {
+                    Thread.sleep(1000l);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            mChatService.connect(device, true);//重连
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -345,9 +398,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
     @OnClick(R.id.btn_send)
     public void setToSend() {
         sendMessage(et_sendmessage.getText().toString());
-        hideKeyboard();
-        et_sendmessage.setText("");
-        rv_speech.scrollToPosition(mData.size() - 1);
     }
 
     /**
@@ -356,7 +406,9 @@ public class BluetoothChatActivity extends AppCompatActivity {
      * @param message A string of text to send.
      */
     private void sendMessage(String message) {
+        waitDialog.sendMsg();
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+            waitDialog.dismiss();
             ToastUtils.showMsg(getString(R.string.notConnect));
             return;
         }
@@ -391,9 +443,15 @@ public class BluetoothChatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (mChatService != null) mChatService.stop();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        isDestroyed = true;
         ButterKnife.unbind(this);
-        if (mChatService != null) mChatService.stop();
     }
 }

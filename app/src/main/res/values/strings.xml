@@ -259,7 +259,7 @@
     <string name="Bluetoothisnotavailable">蓝牙异常不可用...</string>
     <string name="notConnect">未连接设备</string>
     <string name="connectting">正在连接设备...</string>
-    <string name="connecttedTo">已连接</string>
+    <string name="connecttedTo">已连接 -> </string>
     <!--  DeviceListActivity -->
     <string name="scanning">正在寻找设备...</string>
     <string name="select_device">选择一个设备</string>

@@ -257,31 +257,26 @@ public class BluetoothChatService {
     /**
      * Indicate that the connection attempt failed and notify the UI Activity.
      */
-    private void connectionFailed() {
+    private void connectionFailed(BluetoothDevice mmDevice) {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_TOAST_CONNECT_FAIL);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothChatActivity.TOAST, "Unable to connect device");
+        bundle.putString(BluetoothChatActivity.TOAST, "设备: " + mmDevice.getName() + " 连接失败！");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
-
-        // Start the service over to restart listening mode
-        BluetoothChatService.this.start();
     }
 
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
-    private void connectionLost() {
+    private void connectionLost(BluetoothSocket mmSocket) {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_TOAST_CONNECT_LOST);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothChatActivity.TOAST, "Device connection was lost");
+        bundle.putString(BluetoothChatActivity.TOAST, "设备： " + mmSocket.getRemoteDevice().getName() + " 掉线了!");
+        bundle.putString(BluetoothChatActivity.DEVICE_ADDRESS, mmSocket.getRemoteDevice().getAddress());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
-
-        // Start the service over to restart listening mode
-        BluetoothChatService.this.start();
     }
 
     /**
@@ -361,6 +356,9 @@ public class BluetoothChatService {
         public void cancel() {
             if (D) Log.d(TAG, "Socket Type" + mSocketType + "cancel " + this);
             try {
+                if(this.isAlive()){
+                    this.interrupt();
+                }
                 mmServerSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type" + mSocketType + "close() of server failed", e);
@@ -420,7 +418,7 @@ public class BluetoothChatService {
                     Log.e(TAG, "unable to close() " + mSocketType +
                             " socket during connection failure", e2);
                 }
-                connectionFailed();
+                connectionFailed(mmDevice);
                 return;
             }
 
@@ -435,6 +433,9 @@ public class BluetoothChatService {
 
         public void cancel() {
             try {
+                if(this.isAlive()){
+                    this.interrupt();
+                }
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect " + mSocketType + " socket failed", e);
@@ -485,9 +486,7 @@ public class BluetoothChatService {
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
-                    connectionLost();
-                    // Start the service over to restart listening mode
-                    BluetoothChatService.this.start();
+                    connectionLost(mmSocket);
                     break;
                 }
             }
@@ -512,7 +511,12 @@ public class BluetoothChatService {
 
         public void cancel() {
             try {
+                if(this.isAlive()){
+                    this.interrupt();
+                }
+                mmInStream.close();
                 mmSocket.close();
+                mmOutStream.close();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
