@@ -202,7 +202,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     if (!isDestroyed) {
                         // Start the service over to restart listening mode
                         mChatService.start();
-                        new TimeThread(device).start();
                     }
                     break;
                 case MESSAGE_TOAST_CONNECT_FAIL://连接失败的回调
@@ -215,34 +214,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
             }
         }
     };
-
-    private class TimeThread extends Thread {  //断线重连
-        BluetoothDevice device;
-
-        public TimeThread(BluetoothDevice device) {
-            this.device = device;
-        }
-
-        public void run() {
-            int i = 3;
-            while (i > 0) {
-                final int finalI = i;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ToastUtils.showMsg(finalI + "秒后，自动重连...");
-                    }
-                });
-                i--;
-                try {
-                    Thread.sleep(1000l);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            mChatService.connect(device, true);//重连
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

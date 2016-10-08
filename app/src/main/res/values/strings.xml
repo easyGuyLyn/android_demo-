@@ -255,17 +255,17 @@
     <string name="invalid_email_message" translatable="false">Provided e-mail address is invalid</string>
     <!-- Edit 格式验证-->
     <!--  BluetoothChatActivity -->
-    <string name="BluTittle">蓝牙IM</string>
-    <string name="Bluetoothisnotavailable">蓝牙异常不可用...</string>
-    <string name="notConnect">未连接设备</string>
-    <string name="connectting">正在连接设备...</string>
-    <string name="connecttedTo">已连接 -> </string>
+    <string name="BluTittle" translatable="false">蓝牙IM</string>
+    <string name="Bluetoothisnotavailable" translatable="false">蓝牙异常不可用...</string>
+    <string name="notConnect" translatable="false">未连接设备</string>
+    <string name="connectting" translatable="false">正在连接设备...</string>
+    <string name="connecttedTo" translatable="false">已连接 -> </string>
     <!--  DeviceListActivity -->
-    <string name="scanning">正在寻找设备...</string>
-    <string name="select_device">选择一个设备</string>
-    <string name="none_paired">没有被缓存的设备</string>
-    <string name="none_found">没有发现设备</string>
-    <string name="title_paired_devices">已缓存的设备</string>
-    <string name="title_other_devices">其他可用的设备</string>
-    <string name="button_scan">寻找设备</string>
+    <string name="scanning" translatable="false">正在寻找设备...</string>
+    <string name="select_device" translatable="false">选择一个设备</string>
+    <string name="none_paired" translatable="false">没有被缓存的设备</string>
+    <string name="none_found" translatable="false">没有发现设备</string>
+    <string name="title_paired_devices" translatable="false">已缓存的设备</string>
+    <string name="title_other_devices" translatable="false">其他可用的设备</string>
+    <string name="button_scan" translatable="false">寻找设备</string>
 </resources>
