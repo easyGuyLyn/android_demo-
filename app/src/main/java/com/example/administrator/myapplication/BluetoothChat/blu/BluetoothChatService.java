@@ -16,8 +16,10 @@
 
 package com.example.administrator.myapplication.BluetoothChat.blu;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -356,7 +358,7 @@ public class BluetoothChatService {
         public void cancel() {
             if (D) Log.d(TAG, "Socket Type" + mSocketType + "cancel " + this);
             try {
-                if(this.isAlive()){
+                if (this.isAlive()) {
                     this.interrupt();
                 }
                 mmServerSocket.close();
@@ -433,7 +435,7 @@ public class BluetoothChatService {
 
         public void cancel() {
             try {
-                if(this.isAlive()){
+                if (this.isAlive()) {
                     this.interrupt();
                 }
                 mmSocket.close();
@@ -481,9 +483,13 @@ public class BluetoothChatService {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 
-                    // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
+                    msg.arg1 = bytes;
+                    msg.obj = buffer;
+                    msg.setData(bundle);
+                    mHandler.sendMessage(msg);
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost(mmSocket);
@@ -500,10 +506,13 @@ public class BluetoothChatService {
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
-
-                // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_WRITE, -1, -1, buffer)
-                        .sendToTarget();
+                mmOutStream.flush();
+                Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_WRITE);
+                Bundle bundle = new Bundle();
+                bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
+                msg.obj = buffer;
+                msg.setData(bundle);
+                mHandler.sendMessage(msg);
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }
@@ -511,7 +520,7 @@ public class BluetoothChatService {
 
         public void cancel() {
             try {
-                if(this.isAlive()){
+                if (this.isAlive()) {
                     this.interrupt();
                 }
                 mmInStream.close();

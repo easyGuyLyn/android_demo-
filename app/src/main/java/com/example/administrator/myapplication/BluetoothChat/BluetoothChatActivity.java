@@ -31,6 +31,8 @@ import android.widget.TextView;
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.BluetoothChat.blu.BluetoothChatService;
 import com.example.administrator.myapplication.BluetoothChat.config.WaitDialog;
+import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
+import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
 import com.example.administrator.myapplication.R;
 
 import java.util.ArrayList;
@@ -99,7 +101,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
 
     private WaitDialog waitDialog;
     private ChatAdapter speechAdapter;
-    private List<String> mData = new ArrayList<>();
+    private List<BluChatMsg> mData = new ArrayList<>();
     private InputMethodManager imm;
     private Boolean isNeedSrollByItself = true;
     private Boolean isDestroyed = false;
@@ -177,7 +179,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
                 case MESSAGE_WRITE: //成功发送消息后的回调
                     byte[] writeBuf = (byte[]) msg.obj;
                     String writeMessage = new String(writeBuf);
-                    addMsg("Me:  " + writeMessage);
+                    addMsg(new BluChatMsgText(BluChatMsg.SEND, "我", writeMessage));
                     hideKeyboard();
                     et_sendmessage.setText("");
                     rv_speech.scrollToPosition(mData.size() - 1);
@@ -185,8 +187,9 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     break;
                 case MESSAGE_READ: //成功读取消息后的回调
                     byte[] readBuf = (byte[]) msg.obj;
+                    String deviceName = msg.getData().getString(DEVICE_NAME);
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    addMsg(mConnectedDeviceName + ":  " + readMessage);
+                    addMsg(new BluChatMsgText(BluChatMsg.RECEIVE, deviceName, readMessage));
                     break;
                 case MESSAGE_DEVICE_NAME://获得连接设备名后的回调
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
@@ -213,7 +216,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     };
 
-    private class TimeThread extends Thread {
+    private class TimeThread extends Thread {  //断线重连
         BluetoothDevice device;
 
         public TimeThread(BluetoothDevice device) {
@@ -287,7 +290,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
             toolbar.setSubtitle(status);
         }
     }
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult " + resultCode);
@@ -406,6 +408,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
      * @param message A string of text to send.
      */
     private void sendMessage(String message) {
+        //// TODO: 2016/10/8  
         waitDialog.sendMsg();
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
             waitDialog.dismiss();
@@ -418,7 +421,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-    public void addMsg(String msg) {
+    public void addMsg(BluChatMsg msg) {
         mData.add(msg);
         speechAdapter.notifyItemInserted(mData.size() - 1);
         if (isNeedSrollByItself) rv_speech.scrollToPosition(mData.size() - 1);
@@ -443,15 +446,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (mChatService != null) mChatService.stop();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         isDestroyed = true;
+        if (mChatService != null) mChatService.stop();
         ButterKnife.unbind(this);
     }
 }

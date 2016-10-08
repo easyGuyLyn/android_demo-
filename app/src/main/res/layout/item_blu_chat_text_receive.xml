@@ -17,6 +17,6 @@
         android:lineSpacingMultiplier="1.0"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="212131321231212131321231"
+        android:text=""
         android:textSize="13dp" />
 </RelativeLayout>
