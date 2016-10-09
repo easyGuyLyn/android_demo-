@@ -170,7 +170,6 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <!-- 仿微信图库 -->
         <!-- crop_master -->
-        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <!-- crop_master -->
         <!-- 仿微信裁剪 -->
         <activity

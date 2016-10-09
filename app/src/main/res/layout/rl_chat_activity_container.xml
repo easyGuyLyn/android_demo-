@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_single_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_speech"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/rl_chat_control" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <RelativeLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_speech"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <LinearLayout
         android:id="@+id/rl_chat_control"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/message_bottom"
@@ -136,5 +142,9 @@
 
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
-</RelativeLayout>
+
+        <include
+            android:id="@+id/ll_bottom_chat_container"
+            layout="@layout/ll_bottom_chat_more" />
+    </LinearLayout>
+</LinearLayout>

@@ -25,6 +25,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -79,7 +80,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
     @Bind(R.id.rv_speech)
     RecyclerView rv_speech;
     @Bind(R.id.rl_chat_control)
-    RelativeLayout rl_chat_control;
+    LinearLayout rl_chat_control;
     @Bind(R.id.btn_send)
     TextView btn_send;
     @Bind(R.id.btn_more)

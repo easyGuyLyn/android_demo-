@@ -22,7 +22,7 @@
 
     <include
         android:id="@+id/chat_content"
-        layout="@layout/fragment_single_chat" />
+        layout="@layout/rl_chat_activity_container" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

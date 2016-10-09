@@ -7,10 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.andreabaccega.formedittextvalidator.CreditCardValidator;
-import com.andreabaccega.formedittextvalidator.EmailValidator;
-import com.andreabaccega.formedittextvalidator.OrValidator;
-import com.andreabaccega.widget.FormEditText;
 import com.example.administrator.myapplication.BluetoothChat.BluetoothChatActivity;
 import com.example.administrator.myapplication.JellyViewPager.JellyViewPagerActivity;
 import com.example.administrator.myapplication.R;
@@ -21,7 +17,6 @@ import com.example.administrator.myapplication.crop.CropMasterActivity;
 import com.example.administrator.myapplication.editValtor.EditTextFormExampleActivity;
 import com.example.administrator.myapplication.loadingView.LoadingViewActivity;
 import com.example.administrator.myapplication.mvcHelper.MovieDetailActivity;
-import com.example.administrator.myapplication.mvcHelper.UltraActivity;
 import com.example.administrator.myapplication.notboringactionbar.NoBoringActionBarActivity;
 import com.example.administrator.myapplication.squareprogressbar.demo.ProgerssBarActivity;
 import com.example.administrator.myapplication.topfloat.TopFloatActivity;
@@ -146,6 +141,11 @@ public class DemoActivity extends AppCompatActivity {
     public void ll_loadmore() {
         Intent intent = new Intent(DemoActivity.this, MovieDetailActivity.class);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.ll_viewpagerBrowser)
+    public void ll_viewpagerBrowser() {
+
     }
 
     public void onRefresh() {
