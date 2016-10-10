@@ -91,7 +91,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical">
 
-                    <EditText
+                    <com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText
                         android:id="@+id/et_sendmessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                         android:maxLines="3"
                         android:minHeight="30dp"
                         android:padding="3dp"
-                        android:textSize="14sp"></EditText>
+                        android:textSize="14sp"></com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText>
 
                     <ImageView
                         android:id="@+id/iv_emoticons"

@@ -2,9 +2,11 @@ package com.example.administrator.myapplication.BluetoothChat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.administrator.myapplication.BluetoothChat.config.ChatMessageUtils;
 import com.example.administrator.myapplication.BluetoothChat.config.CommonViewHolder;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
@@ -60,10 +62,12 @@ public class ChatAdapter extends RecyclerView.Adapter {
         String deviceName = message.getDeviceName() + ": ";
         switch (getItemViewType(position)) {
             case TYPE_TEXT_SEND:
-                viewHolder.getTv(R.id.tv_text).setText(deviceName + ((BluChatMsgText) message).getText());
+                SpannableString contentWithEmoSend = ChatMessageUtils.toSpannableString(mContext, ((BluChatMsgText) message).getText());
+                viewHolder.getTv(R.id.tv_text).setText(deviceName + contentWithEmoSend);
                 break;
             case TYPE_TEXT_RECEIVE:
-                viewHolder.getTv(R.id.tv_text).setText(deviceName + ((BluChatMsgText) message).getText());
+                SpannableString contentWithEmoReceive = ChatMessageUtils.toSpannableString(mContext, ((BluChatMsgText) message).getText());
+                viewHolder.getTv(R.id.tv_text).setText(deviceName + contentWithEmoReceive);
                 break;
         }
     }

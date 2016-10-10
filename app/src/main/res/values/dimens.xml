@@ -38,4 +38,18 @@
     <dimen name="lvDividerHeight">1dp</dimen>
     <dimen name="lvSectionDividerMarginTop">5dp</dimen>
     <!-- progeressBar -->
+
+    <!-- BluChat -->
+    <dimen name="usual_margin">10dp</dimen>
+    <dimen name="usual_padding">8dp</dimen>
+    <dimen name="usual_margin_half">5dp</dimen>
+    <dimen name="tiny_margin">3dp</dimen>
+    <dimen name="tab_height">60dp</dimen>
+    <dimen name="item_height_high">90dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="popupwindow_width">140dp</dimen>
+    <dimen name="popupwindow_height">65dp</dimen>
+    <dimen name="chat_image_height">160dp</dimen>
+    <dimen name="chat_image_width">120dp</dimen>
+    <!-- BluChat -->
 </resources>

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,10 +32,14 @@ import android.widget.TextView;
 
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.BluetoothChat.blu.BluetoothChatService;
+import com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText;
+import com.example.administrator.myapplication.BluetoothChat.config.TextChatMessage;
 import com.example.administrator.myapplication.BluetoothChat.config.WaitDialog;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
+import com.example.administrator.myapplication.BluetoothChat.tools.InitEmoViewTools;
 import com.example.administrator.myapplication.R;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +59,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST_CONNECT_FAIL = 5;
     public static final int MESSAGE_TOAST_CONNECT_LOST = 6;
-
     // Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_ADDRESS = "device_adress";
     public static final String TOAST = "toast";
-
     // Intent request codes
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
@@ -70,7 +73,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
     private BluetoothChatService mChatService = null;
-    //最近连接的一个设备
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -78,28 +80,35 @@ public class BluetoothChatActivity extends AppCompatActivity {
     FloatingActionButton fab;
     //内容
     @Bind(R.id.rv_speech)
-    RecyclerView rv_speech;
+    RecyclerView rv_speech; //聊天列表
     @Bind(R.id.rl_chat_control)
     LinearLayout rl_chat_control;
     @Bind(R.id.btn_send)
-    TextView btn_send;
+    TextView btn_send; //发送按钮
     @Bind(R.id.btn_more)
-    ImageView btn_more;
+    ImageView btn_more; //更多按钮
     //文字输入
     @Bind(R.id.edittext_layout)
     RelativeLayout edittext_layout;
-    @Bind(R.id.iv_emoticons)
-    ImageView iv_emoticons;
     @Bind(R.id.et_sendmessage)
-    EditText et_sendmessage;
+    MyChatEditText et_sendmessage;
     @Bind(R.id.btn_set_mode_keyboard)
-    ImageView btn_set_mode_keyboard;
+    ImageView btn_set_mode_keyboard; //切换文字输入按钮
     //语音输入
     @Bind(R.id.btn_press_to_speak)
     RelativeLayout btn_press_to_speak;
     @Bind(R.id.btn_set_mode_voice)
-    ImageView btn_set_mode_voice;
+    ImageView btn_set_mode_voice; //切换语音按钮
+    //表情
+    @Bind(R.id.iv_emoticons)
+    ImageView iv_emoticons; //呼唤表情面板按钮
+    @Bind(R.id.cpi_footer_chat_activity_emo_indicator)
+    CirclePageIndicator cip;  //ViewPager中的界面圆形界面指示器（第三方类库）
+    @Bind(R.id.vp_footer_chat_activity_pager_emo)
+    ViewPager pager_emo;  //layoutEmo中管理加载表情的界面的ViewPager
+    private List<TextChatMessage> emos;//装载表情图片的列表
 
+    //全局
     private WaitDialog waitDialog;
     private ChatAdapter speechAdapter;
     private List<BluChatMsg> mData = new ArrayList<>();
@@ -134,7 +143,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-
     private void initView() {
         toolbar.setTitle(getString(R.string.BluTittle));
         toolbar.setSubtitle(getString(R.string.notConnect));
@@ -144,9 +152,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             ToastUtils.showMsg(getString(R.string.Bluetoothisnotavailable));
-            finish();
+            finishActivity();
             return;
         }
+        InitEmoViewTools.initEmoView(this, emos, pager_emo, cip, et_sendmessage);//初始化表情相关业务
     }
 
     public void setupTask() {
@@ -238,11 +247,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
             ensureDiscoverable();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void ensureDiscoverable() {
+    private void ensureDiscoverable() {//重新搜索设备
         Log.d(TAG, "ensure discoverable");
         if (mBluetoothAdapter.getScanMode() !=
                 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
@@ -252,12 +260,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 设置此时蓝牙的连接状态在副标题上
-     *
-     * @param status
-     */
-    public void setStatus(String status) {
+    public void setStatus(String status) {//设置此时蓝牙的连接状态在副标题上
         if (toolbar != null) {
             toolbar.setSubtitle(status);
         }
@@ -286,7 +289,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-    private void connectDevice(Intent data, boolean secure) {
+    private void connectDevice(Intent data, boolean secure) {//连接设备
         String address = data.getExtras()
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
@@ -347,7 +350,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         });
     }
 
-    protected boolean isSlideToBottom(RecyclerView recyclerView) {
+    protected boolean isSlideToBottom(RecyclerView recyclerView) {//recyclerView是否处于底部
         if (recyclerView == null) return false;
         if (recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset() >= recyclerView.computeVerticalScrollRange())
             return true;
@@ -374,12 +377,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         sendMessage(et_sendmessage.getText().toString());
     }
 
-    /**
-     * Sends a message.
-     *
-     * @param message A string of text to send.
-     */
-    private void sendMessage(String message) {
+    private void sendMessage(String message) {//发送一条消息
         //// TODO: 2016/10/8  
         waitDialog.sendMsg();
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -393,18 +391,13 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-    public void addMsg(BluChatMsg msg) {
+    public void addMsg(BluChatMsg msg) {//增加了一条消息
         mData.add(msg);
         speechAdapter.notifyItemInserted(mData.size() - 1);
         if (isNeedSrollByItself) rv_speech.scrollToPosition(mData.size() - 1);
     }
 
-    /**
-     * @方法名：hideKeyboard
-     * @描述：隐藏软键盘
-     * @输出：void
-     */
-    private void hideKeyboard() {
+    private void hideKeyboard() { //隐藏软键盘
         if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
             if (getCurrentFocus() != null)
                 imm.hideSoftInputFromWindow(getCurrentFocus()

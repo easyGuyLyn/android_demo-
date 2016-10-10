@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <GridView
+        android:id="@+id/gv_emos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/usual_margin_half"
+        android:layout_marginTop="@dimen/usual_margin_half"
+        android:fadingEdge="none"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/usual_margin_half"
+        android:numColumns="7"
+        android:scrollbars="none"
+        android:verticalSpacing="@dimen/usual_margin_half" />
+
+</LinearLayout>

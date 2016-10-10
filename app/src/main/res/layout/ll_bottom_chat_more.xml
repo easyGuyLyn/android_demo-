@@ -15,7 +15,7 @@
         <RelativeLayout
             android:id="@+id/ll_footer_chat_activity_container_emo"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="150dp"
             android:orientation="vertical"
             android:visibility="visible">
 
@@ -24,13 +24,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-  <!--          <com.viewpagerindicator.CirclePageIndicator
+            <com.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/cpi_footer_chat_activity_emo_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:padding="10dp"></com.viewpagerindicator.CirclePageIndicator>-->
+                android:padding="10dp"></com.viewpagerindicator.CirclePageIndicator>
         </RelativeLayout>
 
         <!-- 当按下了 “更多”按钮的时候，会出现 footer_chat_add_expand_layout，供用户发送图片、位置和拍照 -->
