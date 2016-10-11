@@ -40,7 +40,7 @@ public class InitEmoViewTools {
         pager_emo.setAdapter(new EmoPagerAdapter(views));
 
         /**为PagerAdapter添加底部的圆形的导航按钮*/
-        cip.setFillColor(Color.DKGRAY);
+        cip.setFillColor(context.getResources().getColor(R.color.colorAccent));
         cip.setViewPager(pager_emo, 0);
     }
 

@@ -8,16 +8,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <!-- 当按下了“表情”按钮的时候，会出现选择表情的ViewPager -->
 
         <RelativeLayout
-            android:id="@+id/ll_footer_chat_activity_container_emo"
+            android:id="@+id/rl_footer_chat_activity_container_emo"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:background="@color/bread_backgroud"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp_footer_chat_activity_pager_emo"

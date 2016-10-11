@@ -51,4 +51,5 @@
     <!-- 投影线 -->
     <color name="colorShadow">#D2D2D2</color>
     <color name="common_gray">#8C8C8C</color>
+    <color name="common_gray_light">#308C8C8C</color>
 </resources>

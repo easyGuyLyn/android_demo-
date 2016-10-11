@@ -47,6 +47,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import utils.CommonUtils;
 import utils.ToastUtils;
 
 public class BluetoothChatActivity extends AppCompatActivity {
@@ -99,6 +100,11 @@ public class BluetoothChatActivity extends AppCompatActivity {
     RelativeLayout btn_press_to_speak;
     @Bind(R.id.btn_set_mode_voice)
     ImageView btn_set_mode_voice; //切换语音按钮
+    //底部
+    @Bind(R.id.ll_footer_chat_activity_container)
+    LinearLayout ll_footer_chat_activity_container;//底部展开的所有父容器
+    @Bind(R.id.rl_footer_chat_activity_container_emo)
+    RelativeLayout rl_footer_chat_activity_container_emo;//表情面板的容器
     //表情
     @Bind(R.id.iv_emoticons)
     ImageView iv_emoticons; //呼唤表情面板按钮
@@ -190,7 +196,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     byte[] writeBuf = (byte[]) msg.obj;
                     String writeMessage = new String(writeBuf);
                     addMsg(new BluChatMsgText(BluChatMsg.SEND, "我", writeMessage));
-                    hideKeyboard();
                     et_sendmessage.setText("");
                     rv_speech.scrollToPosition(mData.size() - 1);
                     waitDialog.dismiss();
@@ -306,7 +311,8 @@ public class BluetoothChatActivity extends AppCompatActivity {
         rv_speech.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                hideKeyboard();
+                CommonUtils.hiddenInput(BluetoothChatActivity.this);
+                ll_footer_chat_activity_container.setVisibility(View.GONE);
                 return false;
             }
         });
@@ -369,7 +375,35 @@ public class BluetoothChatActivity extends AppCompatActivity {
 
     @OnClick(R.id.iv_emoticons)
     public void setToEmj() {
-        ToastUtils.showMsg("暂不支持表情功能~");
+        et_sendmessage.requestFocus();
+        if (ll_footer_chat_activity_container.getVisibility() == View.VISIBLE) {
+            if (rl_footer_chat_activity_container_emo.getVisibility() == View.VISIBLE) {
+                ll_footer_chat_activity_container.setVisibility(View.GONE);
+                rl_footer_chat_activity_container_emo.setVisibility(View.GONE);
+            } else {
+                rl_footer_chat_activity_container_emo.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+                CommonUtils.hiddenInput(BluetoothChatActivity.this);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ll_footer_chat_activity_container.setVisibility(View.VISIBLE);
+                        rl_footer_chat_activity_container_emo.setVisibility(View.VISIBLE);
+                    }
+                }, 200);
+            } else {
+                ll_footer_chat_activity_container.setVisibility(View.VISIBLE);
+                rl_footer_chat_activity_container_emo.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @OnClick(R.id.et_sendmessage)
+    public void clickEtmsg() {
+        CommonUtils.showInput(BluetoothChatActivity.this, et_sendmessage);
+        ll_footer_chat_activity_container.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.btn_send)
@@ -395,14 +429,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
         mData.add(msg);
         speechAdapter.notifyItemInserted(mData.size() - 1);
         if (isNeedSrollByItself) rv_speech.scrollToPosition(mData.size() - 1);
-    }
-
-    private void hideKeyboard() { //隐藏软键盘
-        if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-            if (getCurrentFocus() != null)
-                imm.hideSoftInputFromWindow(getCurrentFocus()
-                        .getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
     private void finishActivity() {

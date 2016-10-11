@@ -257,6 +257,17 @@ public class DateUtil {
 
     }
 
+    public static String getTimeDT(long time) {
+
+        return new SimpleDateFormat(FORMAT_HM).format(time);
+
+    }
+
+    public static String getTimeTT(long time) {
+
+        return new SimpleDateFormat(FORMAT_MDHM).format(time);
+
+    }
 
     /**
      * 获取时间戳

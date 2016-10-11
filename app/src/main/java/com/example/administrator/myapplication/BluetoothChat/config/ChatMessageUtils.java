@@ -22,7 +22,7 @@ import android.text.style.ImageSpan;
  */
 
 public class ChatMessageUtils {
-    public static List<TextChatMessage> textChatMessages = new ArrayList<TextChatMessage>();
+    public static List<TextChatMessage> textChatMessages = new ArrayList<>();
 
     static {
         textChatMessages.add(new TextChatMessage("\\ue056"));
@@ -123,7 +123,6 @@ public class ChatMessageUtils {
                     start = (endIndex - 1);
                 }
             }
-
             return spannableString;
         } else {
             return new SpannableString("");

@@ -35,7 +35,7 @@
             <LinearLayout
                 android:id="@+id/rl_bottom"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:background="@drawable/chat_input_layout_bg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -44,8 +44,8 @@
 
                 <ImageView
                     android:id="@+id/btn_set_mode_voice"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_marginLeft="6dp"
                     android:background="@drawable/chat_icon_sound"
                     android:scaleType="centerCrop"
@@ -63,7 +63,7 @@
                 <RelativeLayout
                     android:id="@+id/btn_press_to_speak"
                     android:layout_width="0dp"
-                    android:layout_height="36dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="6dp"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
@@ -85,7 +85,7 @@
                 <RelativeLayout
                     android:id="@+id/edittext_layout"
                     android:layout_width="0dp"
-                    android:layout_height="36dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="6dp"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
@@ -94,20 +94,20 @@
                     <com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText
                         android:id="@+id/et_sendmessage"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="35dip"
+                        android:layout_marginRight="40dip"
                         android:background="@drawable/chat_input_shape"
                         android:hint="说点什么吧..."
                         android:maxLines="3"
                         android:minHeight="30dp"
-                        android:padding="3dp"
+                        android:padding="5dp"
                         android:textSize="14sp"></com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText>
 
                     <ImageView
                         android:id="@+id/iv_emoticons"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical|right"
@@ -119,8 +119,8 @@
 
                 <ImageView
                     android:id="@+id/btn_more"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/chat_icon_bar_add"

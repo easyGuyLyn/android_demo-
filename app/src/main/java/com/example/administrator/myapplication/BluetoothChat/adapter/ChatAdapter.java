@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.example.administrator.myapplication.BluetoothChat.config.ChatMessageUtils;
 import com.example.administrator.myapplication.BluetoothChat.config.CommonViewHolder;
+import com.example.administrator.myapplication.BluetoothChat.config.TimeShowUtil;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
 import com.example.administrator.myapplication.R;
@@ -59,15 +60,17 @@ public class ChatAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final CommonViewHolder viewHolder = (CommonViewHolder) holder;
         final BluChatMsg message = mData.get(position);
-        String deviceName = message.getDeviceName() + ": ";
+        String deviceName = message.getDeviceName();
+        viewHolder.getTv(R.id.tv_name).setText(deviceName);
+        viewHolder.getTv(R.id.tv_time).setText(TimeShowUtil.getTimeShow(System.currentTimeMillis()));
         switch (getItemViewType(position)) {
             case TYPE_TEXT_SEND:
                 SpannableString contentWithEmoSend = ChatMessageUtils.toSpannableString(mContext, ((BluChatMsgText) message).getText());
-                viewHolder.getTv(R.id.tv_text).setText(deviceName + contentWithEmoSend);
+                viewHolder.getTv(R.id.tv_text).setText(contentWithEmoSend);
                 break;
             case TYPE_TEXT_RECEIVE:
                 SpannableString contentWithEmoReceive = ChatMessageUtils.toSpannableString(mContext, ((BluChatMsgText) message).getText());
-                viewHolder.getTv(R.id.tv_text).setText(deviceName + contentWithEmoReceive);
+                viewHolder.getTv(R.id.tv_text).setText(contentWithEmoReceive);
                 break;
         }
     }

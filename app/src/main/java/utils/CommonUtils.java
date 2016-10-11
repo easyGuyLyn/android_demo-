@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -110,13 +111,14 @@ public class CommonUtils {
             return false;
         }
     }
-        /**
-         * 弹出视图的提示框
-         *
-         * @param context
-         * @param view
-         * @return
-         */
+
+    /**
+     * 弹出视图的提示框
+     *
+     * @param context
+     * @param view
+     * @return
+     */
 
     public static Dialog getDialog(Context context, View view, int i, boolean isCancelable) {
         final Dialog dialog = new Dialog(context, R.style.MyDialogStyleBottom);
@@ -236,5 +238,33 @@ public class CommonUtils {
         ((ViewGroup.MarginLayoutParams) params).setMargins(10, 10, 10, 10);
         // 设置参数
         listView.setLayoutParams(params);
+    }
+
+    /**
+     * 如果软键盘处于弹出状态，将其隐藏
+     *
+     * @param activity
+     */
+    public static void hiddenInput(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (activity.getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            if (activity.getCurrentFocus() != null)
+                imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    /**
+     * 如果软键盘处于不可见状态，让其弹出
+     *
+     * @param activity
+     * @param view
+     */
+    public static void showInput(Activity activity, View view) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (activity.getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE) {
+            if (activity.getCurrentFocus() != null)
+                imm.showSoftInput(view, 0);
+        }
+
     }
 }
