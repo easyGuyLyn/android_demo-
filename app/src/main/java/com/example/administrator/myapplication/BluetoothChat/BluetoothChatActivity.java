@@ -5,6 +5,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
@@ -24,11 +27,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.BluetoothChat.blu.BluetoothChatService;
@@ -38,6 +41,8 @@ import com.example.administrator.myapplication.BluetoothChat.config.WaitDialog;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
 import com.example.administrator.myapplication.BluetoothChat.tools.InitEmoViewTools;
+import com.example.administrator.myapplication.BluetoothChat.tools.InitRecordTools;
+import com.example.administrator.myapplication.BluetoothChat.tools.VoiceRecorder;
 import com.example.administrator.myapplication.R;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -48,6 +53,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import utils.CommonUtils;
+import utils.TLogUtils;
 import utils.ToastUtils;
 
 public class BluetoothChatActivity extends AppCompatActivity {
@@ -60,6 +66,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST_CONNECT_FAIL = 5;
     public static final int MESSAGE_TOAST_CONNECT_LOST = 6;
+    public final static int VOICE_REFRESH = 11;
+    public final static int VOICE_TIP = 12;
+    public final static int VOICE_LONG = 13;
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 29;
     // Key names received from the BluetoothChatService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_ADDRESS = "device_adress";
@@ -79,7 +89,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.fab)
     FloatingActionButton fab;
-    //内容
     @Bind(R.id.rv_speech)
     RecyclerView rv_speech; //聊天列表
     @Bind(R.id.rl_chat_control)
@@ -88,18 +97,27 @@ public class BluetoothChatActivity extends AppCompatActivity {
     TextView btn_send; //发送按钮
     @Bind(R.id.btn_more)
     ImageView btn_more; //更多按钮
-    //文字输入
+    //文字
     @Bind(R.id.edittext_layout)
     RelativeLayout edittext_layout;
     @Bind(R.id.et_sendmessage)
     MyChatEditText et_sendmessage;
     @Bind(R.id.btn_set_mode_keyboard)
     ImageView btn_set_mode_keyboard; //切换文字输入按钮
-    //语音输入
+    //语音
     @Bind(R.id.btn_press_to_speak)
     RelativeLayout btn_press_to_speak;
     @Bind(R.id.btn_set_mode_voice)
     ImageView btn_set_mode_voice; //切换语音按钮
+    @Bind(R.id.recording_container)
+    RelativeLayout recordingContainer;// 一个容器，装载显示录音时声音变化的ivRecord和录音时提示信息的tvVoiceTips
+    @Bind(R.id.recording_hint)
+    TextView recordingHint;//显示提示信息的组件
+    @Bind(R.id.mic_image)
+    ImageView micImage;//layoutRecord中,根据录音时语音的大小加载不同图片的ImageView控件
+    private Drawable[] micImages; // 话筒动画,里面装载5张图片，根据音量大小，让ivRecord加载不同的图片
+    private VoiceRecorder voiceRecorder;
+    public static boolean notShowTip = true;// 是否显示语音倒计时
     //底部
     @Bind(R.id.ll_footer_chat_activity_container)
     LinearLayout ll_footer_chat_activity_container;//底部展开的所有父容器
@@ -162,6 +180,18 @@ public class BluetoothChatActivity extends AppCompatActivity {
             return;
         }
         InitEmoViewTools.initEmoView(this, emos, pager_emo, cip, et_sendmessage);//初始化表情相关业务
+        micImages = new Drawable[]{ // 话筒动画,里面装载5张图片，根据音量大小，让ivRecord加载不同的图片
+                getResources().getDrawable(R.drawable.record_animate_01),
+                getResources().getDrawable(R.drawable.record_animate_02),
+                getResources().getDrawable(R.drawable.record_animate_03),
+                getResources().getDrawable(R.drawable.record_animate_04),
+                getResources().getDrawable(R.drawable.record_animate_05),
+                getResources().getDrawable(R.drawable.record_animate_06),
+                getResources().getDrawable(R.drawable.record_animate_07),
+                getResources().getDrawable(R.drawable.record_animate_08)};
+
+        voiceRecorder = new VoiceRecorder(BluetoothChatActivity.this, mHandler);   //初始化语音相关
+        InitRecordTools.initRecord(btn_press_to_speak, this, recordingContainer, recordingHint, voiceRecorder);
     }
 
     public void setupTask() {
@@ -172,7 +202,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
         rv_speech.setAdapter(speechAdapter);
     }
 
-    // The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -180,6 +209,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
                 case MESSAGE_STATE_CHANGE://蓝牙连接状态改变后的回调
                     Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
+                        //蓝牙相关
                         case BluetoothChatService.STATE_CONNECTED:
                             setStatus(getString(R.string.connecttedTo) + " " + mConnectedDeviceName);
                             break;
@@ -215,16 +245,46 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     String adress = msg.getData().getString(DEVICE_ADDRESS);
                     BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(adress);
                     if (!isDestroyed) {
-                        // Start the service over to restart listening mode
-                        mChatService.start();
+                        mChatService.start();// Start the service over to restart listening mode
                     }
                     break;
                 case MESSAGE_TOAST_CONNECT_FAIL://连接失败的回调
                     if (!isDestroyed) {
-                        // Start the service over to restart listening mode
-                        mChatService.start();
+                        mChatService.start(); // Start the service over to restart listening mode
                     }
                     ToastUtils.showMsg(msg.getData().getString(TOAST));
+                    break;
+                //语言相关
+                case VOICE_LONG:
+                    recordingHint.setText(R.string.msg_msg_voice_press_speak);
+                    recordingContainer.setVisibility(View.INVISIBLE);
+                    int length = msg.arg1;
+                    if (length > 0) {
+                        //// TODO: 2016/10/12
+                        TLogUtils.d("lyn",voiceRecorder.getVoiceFilePath(length) + ",时长:" + length);
+                        ToastUtils.showMsg(voiceRecorder.getVoiceFilePath(length) + ",时长:" + length);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "录音时间太短", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case VOICE_REFRESH:
+                    if (msg.arg1 <= 1)
+                        micImage.setImageDrawable(micImages[0]);
+                    else
+                        micImage.setImageDrawable(micImages[msg.arg1 >= 8 ? 7
+                                : msg.arg1 - 1]);
+                    break;
+                case VOICE_TIP:
+                    if (!recordingHint
+                            .getText()
+                            .toString()
+                            .equals(getString(R.string.msg_msg_voice_do_cancel_send_2))
+                            || !notShowTip) {
+                        recordingHint.setText("您最多还可以说 " + msg.arg1 + " 秒");
+                        recordingHint.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                    break;
+                default:
                     break;
             }
         }
@@ -363,9 +423,23 @@ public class BluetoothChatActivity extends AppCompatActivity {
         return false;
     }
 
+
+    @OnClick(R.id.btn_set_mode_keyboard)
+    public void setToKeyBoard() {
+        btn_set_mode_keyboard.setVisibility(View.GONE);
+        btn_set_mode_voice.setVisibility(View.VISIBLE);
+        edittext_layout.setVisibility(View.VISIBLE);
+        btn_press_to_speak.setVisibility(View.GONE);
+    }
+
     @OnClick(R.id.btn_set_mode_voice)
     public void setToVoice() {
-        ToastUtils.showMsg("暂不支持语言~");
+        btn_set_mode_keyboard.setVisibility(View.VISIBLE);
+        btn_set_mode_voice.setVisibility(View.GONE);
+        edittext_layout.setVisibility(View.GONE);
+        btn_press_to_speak.setVisibility(View.VISIBLE);
+        ll_footer_chat_activity_container.setVisibility(View.GONE);
+        CommonUtils.hiddenInput(BluetoothChatActivity.this);
     }
 
     @OnClick(R.id.btn_more)
@@ -434,6 +508,33 @@ public class BluetoothChatActivity extends AppCompatActivity {
     private void finishActivity() {
         finish();
         overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    voiceRecorder.startRecording();
+                } else {
+                    ToastUtils.showMsg("你必须允许录音权限才能发送语音");
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            // 停止录音
+            if (voiceRecorder.isRecording()) {
+                voiceRecorder.discardRecording();
+                recordingContainer.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

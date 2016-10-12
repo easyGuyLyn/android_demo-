@@ -113,4 +113,16 @@
         <item name="android:textSize">@dimen/lvSecondaryTextSize</item>
     </style>
     <!-- pregrssBarDemo-->
+    <style name="WRAP">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="WRAP.TextView">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="WRAP.TextView.WHITE">
+        <item name="android:textColor">#ffffffff</item>
+    </style>
 </resources>

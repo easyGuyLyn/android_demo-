@@ -95,7 +95,6 @@ public class ChatMessageUtils {
 
                 //1)从名称获得resId
                 //context.getResources().getIdentifier(key, "drawable", context.getPackageName())
-                //也就是获得com.tarena.catmessage.R.drawable.uexxx
 
                 int resId = getResId(context, key);
                 //2)从resId获得图像

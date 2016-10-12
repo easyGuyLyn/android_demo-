@@ -16,6 +16,33 @@
             android:id="@+id/rv_speech"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/recording_container"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:background="@drawable/recording_hint_bg"
+            android:padding="10dp"
+            android:visibility="invisible">
+
+            <!-- 使用语音功能，录音时的图像 -->
+            <ImageView
+                android:id="@+id/mic_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/record_animate_01" />
+
+            <TextView
+                android:id="@+id/recording_hint"
+                style="@style/WRAP.TextView.WHITE"
+                android:layout_below="@id/mic_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="手指上滑，取消发送"
+                android:textSize="14sp" />
+        </RelativeLayout>
     </FrameLayout>
 
     <LinearLayout
@@ -67,7 +94,7 @@
                     android:layout_marginLeft="6dp"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
-                    android:background="@drawable/chat_input_shape"
+                    android:background="@drawable/rl_chat_record_selector"
                     android:gravity="center"
                     android:visibility="gone">
 

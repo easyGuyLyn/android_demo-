@@ -171,4 +171,21 @@ public class FileUtil {
         }
         return cachePath;
     }
+
+    /**
+     * 获取长时间缓存文件夹
+     *
+     * @param context
+     * @return
+     */
+    public static String getDiskFileDir(Context context, String key) {
+        String cachePath;
+        //isExternalStorageEmulated()设备的外存是否是用内存模拟的，是则返回true
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageEmulated()) {
+            cachePath = context.getExternalFilesDir(key).getAbsolutePath();
+        } else {
+            cachePath = context.getFilesDir().getAbsolutePath();
+        }
+        return cachePath;
+    }
 }
