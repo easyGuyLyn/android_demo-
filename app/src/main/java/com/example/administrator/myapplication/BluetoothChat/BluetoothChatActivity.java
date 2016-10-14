@@ -48,12 +48,14 @@ import com.example.administrator.myapplication.BluetoothChat.tools.VoiceRecorder
 import com.example.administrator.myapplication.R;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import utils.Base64Utils;
 import utils.CommonUtils;
 import utils.TLogUtils;
 import utils.ToastUtils;
@@ -601,7 +603,15 @@ public class BluetoothChatActivity extends AppCompatActivity {
             ToastUtils.showMsg(getString(R.string.notConnect));
             return;
         }
-        ToastUtils.showMsg(voiceFilePath);
+        try {
+            String encode = Base64Utils.encodeBase64File(voiceFilePath);
+            if (encode.length() > 0) {
+                byte[] send = encode.getBytes();
+                mChatService.write(send);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

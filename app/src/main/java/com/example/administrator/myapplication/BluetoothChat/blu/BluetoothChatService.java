@@ -16,7 +16,9 @@
 
 package com.example.administrator.myapplication.BluetoothChat.blu;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,9 +33,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.administrator.myapplication.BluetoothChat.BluetoothChatActivity;
+
+import utils.TLogUtils;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -474,22 +479,30 @@ public class BluetoothChatService {
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectedThread");
-            byte[] buffer = new byte[1024];
+            byte[] buffer;
             int bytes;
-
+            int availableBytes = 0;//解决buffer被覆盖的问题
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
-                    // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
+                    SystemClock.sleep(1000);//解决数据分类问题
+                    availableBytes = mmInStream.available();
+                    TLogUtils.d("lyn_availableBytes", availableBytes + "");
+                    if (availableBytes > 0) {
+                        // Read from the InputStream
+                        buffer = new byte[availableBytes];
+                        bytes = mmInStream.read(buffer);
 
-                    Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
-                    msg.arg1 = bytes;
-                    msg.obj = buffer;
-                    msg.setData(bundle);
-                    mHandler.sendMessage(msg);
+                        if (bytes > 0) {
+                            Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
+                            msg.arg1 = bytes;
+                            msg.obj = buffer;
+                            msg.setData(bundle);
+                            mHandler.sendMessage(msg);
+                        }
+                    }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost(mmSocket);
