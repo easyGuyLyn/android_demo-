@@ -23,11 +23,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import utils.FileUtil;
+import utils.TLogUtils;
 
 public class VoiceRecorder {
 
+    private Context context;
+    private Handler handler;
+
+    //录音相关
     MediaRecorder recorder;
-    AudioManager mAudioMgr;
     public static final String EXTENSION = ".amr";
     private boolean isRecording = false;
     private long startTime;
@@ -37,19 +41,16 @@ public class VoiceRecorder {
     private File file;
     public static final int MAX_DURATION = 180;// 最大录音时长
     public static final int TIME_TO_COUNT_DOWN = 10;// 倒计时开始
-    private Handler handler;
-    private static MediaPlayer mediaPlayer = null;
     private static SimpleDateFormat mFormat = new SimpleDateFormat("yyyMMddHHmmssSSS");
+
+    //播放语音相关
+    AudioManager mAudioMgr;
+    private static MediaPlayer mediaPlayer = null;
+    private MediaPlayerCallback mMediaPlayerCallback;
+    private static AudioManager.OnAudioFocusChangeListener mAudioFocusChangeListener = null;
     private static String playSource = null;
     public static boolean isPlaying = false;
     public static VoiceRecorder currentPlayListener = null;
-    private Context context;
-    private MediaPlayerCallback mMediaPlayerCallback;
-    private static AudioManager.OnAudioFocusChangeListener mAudioFocusChangeListener = null;
-
-    static {
-
-    }
 
     public VoiceRecorder(Context context, Handler paramHandler) {
         this.handler = paramHandler;
@@ -60,11 +61,9 @@ public class VoiceRecorder {
                 public void onAudioFocusChange(int focusChange) {
                     if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                         //失去焦点之后的操作
-                        //   logger.e("AUDIOFOCUS_LOSS");
                         if (isPlaying) {
                             stopPlayVoice();
                         }
-                    } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
                     }
                 }
             };
@@ -91,7 +90,7 @@ public class VoiceRecorder {
             this.isRecording = true;
             this.recorder.start();
         } catch (IOException localIOException) {
-            Log.e("lyn","voice prepare() failed");
+            Log.e("lyn", "voice prepare() failed");
         }
         new Thread(new Runnable() {
             public void run() {
@@ -105,7 +104,7 @@ public class VoiceRecorder {
                         SystemClock.sleep(100L);
                     }
                 } catch (Exception localException) {
-                    Log.e("lyn",localException.toString());
+                    Log.e("lyn", localException.toString());
                 }
             }
         }).start();
@@ -137,7 +136,7 @@ public class VoiceRecorder {
             }
         }).start();
         this.startTime = new Date().getTime();
-        Log.e("lyn","voice" + " start voice recording to file:" + this.file.getAbsolutePath());
+        Log.e("lyn", "voice" + " start voice recording to file:" + this.file.getAbsolutePath());
         return this.file == null ? null : this.file.getAbsolutePath();
     }
 
@@ -190,8 +189,6 @@ public class VoiceRecorder {
         String string = f.getName();
         if (string.contains("_")) {
             try {
-                // duration =
-                // Integer.parseInt(f.getName().split("_")[1].split(EXTENSION)[0]);
                 duration = Integer.parseInt(string.substring(string.lastIndexOf("_") + 1, string.lastIndexOf(".")));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -300,11 +297,10 @@ public class VoiceRecorder {
             mAudioMgr = (AudioManager) MyApplication.getInstance()
                     .getSystemService(Context.AUDIO_SERVICE);
         if (mAudioMgr != null) {
-            //  logger.e("Request audio focus");
             int ret = mAudioMgr.requestAudioFocus(mAudioFocusChangeListener,
                     AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             if (ret != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                //   logger.e("request audio focus fail. " + ret);
+                TLogUtils.d("requestAudioFocus", "request audio focus fail. " + ret);
             }
         }
 
