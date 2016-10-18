@@ -38,17 +38,18 @@ import android.widget.Toast;
 
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.BluetoothChat.blu.BluetoothChatService;
+import com.example.administrator.myapplication.BluetoothChat.config.JsonUtil;
 import com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText;
 import com.example.administrator.myapplication.BluetoothChat.config.TextChatMessage;
 import com.example.administrator.myapplication.BluetoothChat.config.WaitDialog;
-import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
-import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
+import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgBean;
+import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgRp;
 import com.example.administrator.myapplication.BluetoothChat.tools.InitEmoViewTools;
 import com.example.administrator.myapplication.BluetoothChat.tools.VoiceRecorder;
 import com.example.administrator.myapplication.R;
+import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import utils.Base64Utils;
 import utils.CommonUtils;
+import utils.GsonUtil;
 import utils.TLogUtils;
 import utils.ToastUtils;
 
@@ -80,6 +82,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 3;
     // Name of the connected device
     private String mConnectedDeviceName = null;
+    private String mLocalDeviceName = null;
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
@@ -138,7 +141,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
     //全局
     private WaitDialog waitDialog;
     private ChatAdapter speechAdapter;
-    private List<BluChatMsg> mData = new ArrayList<>();
+    private List<BluChatMsgBean> mData = new ArrayList<>();
     private InputMethodManager imm;
     private Boolean isNeedSrollByItself = true;
     private Boolean isDestroyed = false;
@@ -198,9 +201,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
 
     public void setupTask() {
         waitDialog = new WaitDialog(this);
+        mLocalDeviceName = mBluetoothAdapter.getName();
         mChatService = new BluetoothChatService(this, mHandler);
         rv_speech.setLayoutManager(new GridLayoutManager(this, 1));
-        speechAdapter = new ChatAdapter(this, mData);
+        speechAdapter = new ChatAdapter(this, mData, mLocalDeviceName);
         rv_speech.setAdapter(speechAdapter);
     }
 
@@ -226,8 +230,12 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     break;
                 case MESSAGE_WRITE: //成功发送消息后的回调
                     byte[] writeBuf = (byte[]) msg.obj;
-                    String writeMessage = new String(writeBuf);
-                    addMsg(new BluChatMsgText(BluChatMsg.SEND, "我", writeMessage));
+                    String writeMsg = new String(writeBuf);
+                    BluChatMsgBean beanWrite = GsonUtil.GsonToBean(writeMsg, BluChatMsgBean.class);
+                    if (beanWrite == null) {
+                        return;
+                    }
+                    addMsg(beanWrite);
                     et_sendmessage.setText("");
                     rv_speech.scrollToPosition(mData.size() - 1);
                     waitDialog.dismiss();
@@ -236,7 +244,11 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     String deviceName = msg.getData().getString(DEVICE_NAME);
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    addMsg(new BluChatMsgText(BluChatMsg.RECEIVE, deviceName, readMessage));
+                    BluChatMsgBean beanRead = GsonUtil.GsonToBean(readMessage, BluChatMsgBean.class);
+                    if (beanRead == null) {
+                        return;
+                    }
+                    addMsg(beanRead);
                     break;
                 case MESSAGE_DEVICE_NAME://获得连接设备名后的回调
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
@@ -263,7 +275,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     int length = msg.arg1;
                     if (length > 0) {
                         TLogUtils.d("lyn", voiceRecorder.getVoiceFilePath(length) + ",时长:" + length);
-                        sendVoiceMsg(voiceRecorder.getVoiceFilePath(length));
+                        sendVoiceMsg(voiceRecorder.getVoiceFilePath(length), length);
                     } else {
                         Toast.makeText(getApplicationContext(), "录音时间太短", Toast.LENGTH_SHORT).show();
                     }
@@ -490,7 +502,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
                                     if (length > 0) {
                                         //// TODO: 2016/10/12
                                         TLogUtils.d("lyn", voiceRecorder.getVoiceFilePath(length) + ",时长:" + length);
-                                        sendVoiceMsg(voiceRecorder.getVoiceFilePath(length));
+                                        sendVoiceMsg(voiceRecorder.getVoiceFilePath(length), length);
                                     } else {
                                         ToastUtils.showMsg("录音时间太短");
                                     }
@@ -591,12 +603,14 @@ public class BluetoothChatActivity extends AppCompatActivity {
             return;
         }
         if (message.length() > 0) {
-            byte[] send = message.getBytes();
+            BluChatMsgBean bcmr = new BluChatMsgBean("1", mConnectedDeviceName, message, System.currentTimeMillis() + "", mLocalDeviceName);
+            String json = GsonUtil.GsonString(bcmr);
+            byte[] send = json.getBytes();
             mChatService.write(send);
         }
     }
 
-    public void sendVoiceMsg(String voiceFilePath) {//发送一条语音
+    public void sendVoiceMsg(String voiceFilePath, int length) {//发送一条语音
         waitDialog.sendMsg();
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
             waitDialog.dismiss();
@@ -606,7 +620,8 @@ public class BluetoothChatActivity extends AppCompatActivity {
         try {
             String encode = Base64Utils.encodeBase64File(voiceFilePath);
             if (encode.length() > 0) {
-                byte[] send = encode.getBytes();
+                String json = GsonUtil.GsonString(new BluChatMsgBean("3", mConnectedDeviceName, encode, System.currentTimeMillis() + "", mLocalDeviceName));
+                byte[] send = json.getBytes();
                 mChatService.write(send);
             }
         } catch (Exception e) {
@@ -615,7 +630,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
     }
 
 
-    public void addMsg(BluChatMsg msg) {//增加了一条消息
+    public void addMsg(BluChatMsgBean msg) {//增加了一条消息
         mData.add(msg);
         speechAdapter.notifyItemInserted(mData.size() - 1);
         if (isNeedSrollByItself) rv_speech.scrollToPosition(mData.size() - 1);

@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 import com.example.administrator.myapplication.BluetoothChat.config.ChatMessageUtils;
 import com.example.administrator.myapplication.BluetoothChat.config.CommonViewHolder;
 import com.example.administrator.myapplication.BluetoothChat.config.TimeShowUtil;
-import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsg;
-import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgText;
+import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgBean;
 import com.example.administrator.myapplication.R;
 
 import java.util.List;
@@ -23,24 +22,37 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
     private static final int TYPE_TEXT_SEND = 0;
     private static final int TYPE_TEXT_RECEIVE = 1;
+    private static final int TYPE_VOCICE_SEND = 2;
+    private static final int TYPE_VOICE_RECEIVE = 3;
     private Context mContext;
-    private List<BluChatMsg> mData;
+    private List<BluChatMsgBean> mData;
+    private String mLocalDeviceName = null;
 
-    public ChatAdapter(Context context, List<BluChatMsg> data) {
+
+    public ChatAdapter(Context context, List<BluChatMsgBean> data, String LocalDeviceName) {
         this.mContext = context;
         mData = data;
+        mLocalDeviceName = LocalDeviceName;
     }
 
     @Override
     public int getItemViewType(int position) {
-        BluChatMsg msg = mData.get(position);
-        if (msg instanceof BluChatMsgText) {
-            if (msg.getFrom() == BluChatMsg.RECEIVE)
-                return TYPE_TEXT_RECEIVE;
-            else
+        BluChatMsgBean msg = mData.get(position);
+        if (msg.getContentType().equals("1")) {//文字
+            if (msg.getSender().equals(mLocalDeviceName))
                 return TYPE_TEXT_SEND;
+            else
+                return TYPE_TEXT_RECEIVE;
+        } else if (msg.getContentType().equals("2")) {//图片
+
+        } else if (msg.getContentType().equals("3")) {//语音
+            if (msg.getSender().equals(mLocalDeviceName))
+                return TYPE_VOCICE_SEND;
+            else
+                return TYPE_VOICE_RECEIVE;
+        } else {
+
         }
-        //// TODO: 2016/10/8  
         return super.getItemViewType(position);
     }
 
@@ -51,6 +63,10 @@ public class ChatAdapter extends RecyclerView.Adapter {
                 return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_send, null));
             case TYPE_TEXT_RECEIVE:
                 return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_receive, null));
+            case TYPE_VOCICE_SEND:
+                return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_send, null));
+            case TYPE_VOICE_RECEIVE:
+                return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_receive, null));
         }
 
         return null;
@@ -59,18 +75,27 @@ public class ChatAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final CommonViewHolder viewHolder = (CommonViewHolder) holder;
-        final BluChatMsg message = mData.get(position);
-        String deviceName = message.getDeviceName();
-        viewHolder.getTv(R.id.tv_name).setText(deviceName);
-        viewHolder.getTv(R.id.tv_time).setText(TimeShowUtil.getTimeShow(System.currentTimeMillis()));
+        final BluChatMsgBean message = mData.get(position);
+        String connectDeviceName = message.getSender();
+        viewHolder.getTv(R.id.tv_time).setText(TimeShowUtil.getTimeShow(Long.parseLong(message.getTime())));
         switch (getItemViewType(position)) {
             case TYPE_TEXT_SEND:
-                SpannableString contentWithEmoSend = ChatMessageUtils.toSpannableString(mContext, ((BluChatMsgText) message).getText());
+                viewHolder.getTv(R.id.tv_name).setText("我");
+                SpannableString contentWithEmoSend = ChatMessageUtils.toSpannableString(mContext, message.getContent());
                 viewHolder.getTv(R.id.tv_text).setText(contentWithEmoSend);
                 break;
             case TYPE_TEXT_RECEIVE:
-                SpannableString contentWithEmoReceive = ChatMessageUtils.toSpannableString(mContext, ((BluChatMsgText) message).getText());
+                viewHolder.getTv(R.id.tv_name).setText(connectDeviceName);
+                SpannableString contentWithEmoReceive = ChatMessageUtils.toSpannableString(mContext, message.getContent());
                 viewHolder.getTv(R.id.tv_text).setText(contentWithEmoReceive);
+                break;
+            case TYPE_VOCICE_SEND:
+                viewHolder.getTv(R.id.tv_name).setText("我");
+                viewHolder.getTv(R.id.tv_text).setText(message.getContent());
+                break;
+            case TYPE_VOICE_RECEIVE:
+                viewHolder.getTv(R.id.tv_name).setText(connectDeviceName);
+                viewHolder.getTv(R.id.tv_text).setText(message.getContent());
                 break;
         }
     }
