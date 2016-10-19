@@ -5,11 +5,18 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.administrator.myapplication.BluetoothChat.config.ChatMessageUtils;
 import com.example.administrator.myapplication.BluetoothChat.config.CommonViewHolder;
 import com.example.administrator.myapplication.BluetoothChat.config.TimeShowUtil;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgBean;
+import com.example.administrator.myapplication.BluetoothChat.tools.ChatVoiceUtil;
+import com.example.administrator.myapplication.BluetoothChat.tools.VoiceRecorder;
 import com.example.administrator.myapplication.R;
 
 import java.util.List;
@@ -27,12 +34,14 @@ public class ChatAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private List<BluChatMsgBean> mData;
     private String mLocalDeviceName = null;
+    private VoiceRecorder mVoiceRecorder; //语音逻辑类
+    private android.os.Handler handler;
 
-
-    public ChatAdapter(Context context, List<BluChatMsgBean> data, String LocalDeviceName) {
+    public ChatAdapter(Context context, List<BluChatMsgBean> data, String LocalDeviceName, VoiceRecorder voiceRecorder) {
         this.mContext = context;
         mData = data;
         mLocalDeviceName = LocalDeviceName;
+        mVoiceRecorder = voiceRecorder;
     }
 
     @Override
@@ -64,9 +73,9 @@ public class ChatAdapter extends RecyclerView.Adapter {
             case TYPE_TEXT_RECEIVE:
                 return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_receive, null));
             case TYPE_VOCICE_SEND:
-                return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_send, null));
+                return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_voice_send, null));
             case TYPE_VOICE_RECEIVE:
-                return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_text_receive, null));
+                return new CommonViewHolder(View.inflate(mContext, R.layout.item_blu_chat_voice_receive, null));
         }
 
         return null;
@@ -78,6 +87,15 @@ public class ChatAdapter extends RecyclerView.Adapter {
         final BluChatMsgBean message = mData.get(position);
         String connectDeviceName = message.getSender();
         viewHolder.getTv(R.id.tv_time).setText(TimeShowUtil.getTimeShow(Long.parseLong(message.getTime())));
+        /**
+         * 语音的视图
+         */
+        LinearLayout ll_voice_info = viewHolder.getLl(R.id.ll_voice_info);//语音信息
+        TextView tv_voicePlay_duration = viewHolder.getTv(R.id.tv_voicePlay_duration);//语音时长
+        ProgressBar pb_outgoing = viewHolder.getPb(R.id.pb_outgoing);//加载进度条
+        RelativeLayout rl_voice_play = viewHolder.getRl(R.id.rl_voice_play);//点击播放区域
+        ImageView iv_audio = viewHolder.getIv(R.id.iv_audio);//播放桢动图
+
         switch (getItemViewType(position)) {
             case TYPE_TEXT_SEND:
                 viewHolder.getTv(R.id.tv_name).setText("我");
@@ -91,11 +109,13 @@ public class ChatAdapter extends RecyclerView.Adapter {
                 break;
             case TYPE_VOCICE_SEND:
                 viewHolder.getTv(R.id.tv_name).setText("我");
-                viewHolder.getTv(R.id.tv_text).setText(message.getContent());
+                tv_voicePlay_duration.setText(message.getVoiceLength());
+                ChatVoiceUtil.initVoice(true,mVoiceRecorder, handler, mContext, message, ll_voice_info, pb_outgoing, rl_voice_play, iv_audio);
                 break;
             case TYPE_VOICE_RECEIVE:
                 viewHolder.getTv(R.id.tv_name).setText(connectDeviceName);
-                viewHolder.getTv(R.id.tv_text).setText(message.getContent());
+                tv_voicePlay_duration.setText(message.getVoiceLength());
+                ChatVoiceUtil.initVoice(false,mVoiceRecorder, handler, mContext, message, ll_voice_info, pb_outgoing, rl_voice_play, iv_audio);
                 break;
         }
     }

@@ -38,16 +38,13 @@ import android.widget.Toast;
 
 import com.example.administrator.myapplication.BluetoothChat.adapter.ChatAdapter;
 import com.example.administrator.myapplication.BluetoothChat.blu.BluetoothChatService;
-import com.example.administrator.myapplication.BluetoothChat.config.JsonUtil;
 import com.example.administrator.myapplication.BluetoothChat.config.MyChatEditText;
 import com.example.administrator.myapplication.BluetoothChat.config.TextChatMessage;
 import com.example.administrator.myapplication.BluetoothChat.config.WaitDialog;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgBean;
-import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgRp;
 import com.example.administrator.myapplication.BluetoothChat.tools.InitEmoViewTools;
 import com.example.administrator.myapplication.BluetoothChat.tools.VoiceRecorder;
 import com.example.administrator.myapplication.R;
-import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -182,7 +179,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             ToastUtils.showMsg(getString(R.string.Bluetoothisnotavailable));
-            finishActivity();
+            finish();
             return;
         }
         InitEmoViewTools.initEmoView(this, emos, pager_emo, cip, et_sendmessage);//初始化表情相关业务
@@ -204,7 +201,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         mLocalDeviceName = mBluetoothAdapter.getName();
         mChatService = new BluetoothChatService(this, mHandler);
         rv_speech.setLayoutManager(new GridLayoutManager(this, 1));
-        speechAdapter = new ChatAdapter(this, mData, mLocalDeviceName);
+        speechAdapter = new ChatAdapter(this, mData, mLocalDeviceName,voiceRecorder);
         rv_speech.setAdapter(speechAdapter);
     }
 
@@ -378,7 +375,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishActivity();
+                finish();
             }
         });
         rv_speech.setOnTouchListener(new View.OnTouchListener() {
@@ -620,7 +617,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
         try {
             String encode = Base64Utils.encodeBase64File(voiceFilePath);
             if (encode.length() > 0) {
-                String json = GsonUtil.GsonString(new BluChatMsgBean("3", mConnectedDeviceName, encode, System.currentTimeMillis() + "", mLocalDeviceName));
+                BluChatMsgBean sendBean = new BluChatMsgBean("3", mConnectedDeviceName, encode, System.currentTimeMillis() + "", mLocalDeviceName);
+                sendBean.setFilePath(voiceFilePath);
+                sendBean.setVoiceLength(length + "");
+                String json = GsonUtil.GsonString(sendBean);
                 byte[] send = json.getBytes();
                 mChatService.write(send);
             }
@@ -629,16 +629,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-
     public void addMsg(BluChatMsgBean msg) {//增加了一条消息
         mData.add(msg);
         speechAdapter.notifyItemInserted(mData.size() - 1);
         if (isNeedSrollByItself) rv_speech.scrollToPosition(mData.size() - 1);
-    }
-
-    private void finishActivity() {
-        finish();
-        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }
 
     @Override
@@ -663,6 +657,10 @@ public class BluetoothChatActivity extends AppCompatActivity {
             if (voiceRecorder.isRecording()) {
                 voiceRecorder.discardRecording();
                 recordingContainer.setVisibility(View.INVISIBLE);
+            }
+            //停止播放
+            if (VoiceRecorder.isPlaying && VoiceRecorder.currentPlayListener != null) {
+                VoiceRecorder.currentPlayListener.stopPlayVoice();
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,11 +7,17 @@ import java.io.Serializable;
  */
 
 public class BluChatMsgBean implements Serializable {
+
+    //基本字段
     private String time;
     private String sender;
     private String content;
     private String receiver;
     private String contentType; // 1 文字  2 图片 3 语音 4 其他
+
+    //分类字段
+    private String voiceLength;//语音长度
+    private String filePath;//文件地址
 
     public BluChatMsgBean(String contentType, String receiver, String content, String time, String sender) {
         this.contentType = contentType;
@@ -59,5 +65,21 @@ public class BluChatMsgBean implements Serializable {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getVoiceLength() {
+        return voiceLength;
+    }
+
+    public void setVoiceLength(String voiceLength) {
+        this.voiceLength = voiceLength;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
