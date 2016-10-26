@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -200,7 +201,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         waitDialog = new WaitDialog(this);
         mLocalDeviceName = mBluetoothAdapter.getName();
         mChatService = new BluetoothChatService(this, mHandler);
-        rv_speech.setLayoutManager(new GridLayoutManager(this, 1));
+        rv_speech.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         speechAdapter = new ChatAdapter(this, mData, mLocalDeviceName, voiceRecorder);
         rv_speech.setAdapter(speechAdapter);
     }

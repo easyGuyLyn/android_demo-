@@ -78,7 +78,7 @@
                         android:orientation="horizontal"
                         android:visibility="gone">
 
-                        <TextView
+                        <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_voicePlay_duration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                             android:textColor="@color/ygtext_color"
                             android:textSize="11dp" />
 
-                        <TextView
+                        <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     android:gravity="right"
                     android:padding="3dp">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/iv_audio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
