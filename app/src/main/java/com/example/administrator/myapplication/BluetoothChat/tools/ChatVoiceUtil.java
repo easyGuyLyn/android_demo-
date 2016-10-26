@@ -1,5 +1,6 @@
 package com.example.administrator.myapplication.BluetoothChat.tools;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -33,7 +34,7 @@ public class ChatVoiceUtil {
 
     public static final String EXTENSION = ".amr";
 
-    public static void initVoice(final Boolean isSend, final VoiceRecorder mVoiceRecorder, Handler handler, final Context mContext, final BluChatMsgBean message, final LinearLayout ll_voice_info, final ProgressBar pb_outgoing, RelativeLayout rl_voice_play, final ImageView iv_audio) {
+    public static String initVoice(DisplayMetrics displayMetrics, Handler handler, final Context mContext, final BluChatMsgBean message, final LinearLayout ll_voice_info, final ProgressBar pb_outgoing, final RelativeLayout rl_voice_play) {
         if (handler == null) {
             synchronized (Handler.class) {
                 if (handler == null) {
@@ -42,6 +43,7 @@ public class ChatVoiceUtil {
                         public void handleMessage(Message msg) {
                             super.handleMessage(msg);
                             if (msg.what == 1) {
+                                rl_voice_play.setVisibility(View.VISIBLE);
                                 ll_voice_info.setVisibility(View.VISIBLE);
                                 pb_outgoing.setVisibility(View.GONE);
                             }
@@ -50,24 +52,25 @@ public class ChatVoiceUtil {
                 }
             }
         }
-        //setVoiceWidth(rl_voice_play, message);//设置语音点击区域的长度
-        final String[] voicePath = {null}; //语音播放文件地址
+        setVoiceWidth(rl_voice_play, message, displayMetrics);//设置语音点击区域的长度
+        String savepath = getVoiceFilePath(mContext);//语音播放文件地址
         if (new File(message.getFilePath()).exists()) {
+            rl_voice_play.setVisibility(View.VISIBLE);
             ll_voice_info.setVisibility(View.VISIBLE);
             pb_outgoing.setVisibility(View.GONE);
-            voicePath[0] = message.getFilePath();
+            savepath = message.getFilePath();
         } else {
+            rl_voice_play.setVisibility(View.GONE);
             ll_voice_info.setVisibility(View.GONE);
             pb_outgoing.setVisibility(View.VISIBLE);
             final Handler finalHandler = handler;
+            final String finalSavepath = savepath;
             ThreadUtils.newThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        String savepath = getVoiceFilePath(mContext);
-                        Base64Utils.decoderBase64File(message.getContent(), savepath);
-                        message.setFilePath(savepath);
-                        voicePath[0] = savepath;
+                        Base64Utils.decoderBase64File(message.getContent(), finalSavepath);
+                        message.setFilePath(finalSavepath);
                         Message msg = new Message();
                         msg.what = 1;
                         finalHandler.sendMessage(msg);
@@ -77,47 +80,10 @@ public class ChatVoiceUtil {
                 }
             });
         }
-
-        final String finalVoicePath = voicePath[0];
-        rl_voice_play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (finalVoicePath == null) {
-                    ToastUtils.showMsg("文件还在缓冲..");
-                    return;
-                }
-                mVoiceRecorder.playVoice(finalVoicePath, new VoiceRecorder.MediaPlayerCallback() {
-
-                    @Override
-                    public void onStart() {
-                        if (isSend) {
-                            iv_audio.setImageResource(R.drawable.anim_voice_playing_right);
-                        } else {
-                            iv_audio.setImageResource(R.drawable.anim_voice_playing_left);
-                        }
-                        AnimationDrawable ad = (AnimationDrawable) iv_audio.getDrawable();
-                        ad.start();
-                    }
-
-                    @Override
-                    public void onStop() {
-                        Drawable drawable = iv_audio.getDrawable();
-                        if (drawable instanceof AnimationDrawable) {
-                            ((AnimationDrawable) drawable).stop();
-                        }
-                        if (isSend) {
-                            iv_audio.setImageResource(R.drawable.chatto_voice_playing_f3);
-                        } else {
-                            iv_audio.setImageResource(R.drawable.chatfrom_voice_playing_f3);
-                        }
-                    }
-                });
-            }
-        });
+        return savepath;
     }
 
-    public static void setVoiceWidth(RelativeLayout rl_voice_play, BluChatMsgBean message) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
+    public static void setVoiceWidth(RelativeLayout rl_voice_play, BluChatMsgBean message, DisplayMetrics displayMetrics) {
         int audioTime = Integer.parseInt(message.getVoiceLength());
         ViewGroup.LayoutParams layoutParams = rl_voice_play.getLayoutParams();
         // width :1080

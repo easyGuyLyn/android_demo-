@@ -1,8 +1,10 @@
 package com.example.administrator.myapplication.BluetoothChat.adapter;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import com.example.administrator.myapplication.BluetoothChat.config.CommonViewHo
 import com.example.administrator.myapplication.BluetoothChat.config.TimeShowUtil;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgBean;
 import com.example.administrator.myapplication.BluetoothChat.tools.ChatVoiceUtil;
+import com.example.administrator.myapplication.BluetoothChat.tools.VoiceClickUtil;
 import com.example.administrator.myapplication.BluetoothChat.tools.VoiceRecorder;
 import com.example.administrator.myapplication.R;
 
@@ -36,12 +39,15 @@ public class ChatAdapter extends RecyclerView.Adapter {
     private String mLocalDeviceName = null;
     private VoiceRecorder mVoiceRecorder; //语音逻辑类
     private android.os.Handler handler;
+    private DisplayMetrics displayMetrics;
 
     public ChatAdapter(Context context, List<BluChatMsgBean> data, String LocalDeviceName, VoiceRecorder voiceRecorder) {
         this.mContext = context;
         mData = data;
         mLocalDeviceName = LocalDeviceName;
         mVoiceRecorder = voiceRecorder;
+        displayMetrics = new DisplayMetrics();
+        ((AppCompatActivity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     }
 
     @Override
@@ -110,12 +116,14 @@ public class ChatAdapter extends RecyclerView.Adapter {
             case TYPE_VOCICE_SEND:
                 viewHolder.getTv(R.id.tv_name).setText("我");
                 tv_voicePlay_duration.setText(message.getVoiceLength());
-                ChatVoiceUtil.initVoice(true,mVoiceRecorder, handler, mContext, message, ll_voice_info, pb_outgoing, rl_voice_play, iv_audio);
+                String voiceFilePath = ChatVoiceUtil.initVoice(displayMetrics, handler, mContext, message, ll_voice_info, pb_outgoing, rl_voice_play);
+                VoiceClickUtil.doPlay(true, mVoiceRecorder, rl_voice_play, iv_audio, voiceFilePath);
                 break;
             case TYPE_VOICE_RECEIVE:
                 viewHolder.getTv(R.id.tv_name).setText(connectDeviceName);
                 tv_voicePlay_duration.setText(message.getVoiceLength());
-                ChatVoiceUtil.initVoice(false,mVoiceRecorder, handler, mContext, message, ll_voice_info, pb_outgoing, rl_voice_play, iv_audio);
+                String voiceFilePath1 = ChatVoiceUtil.initVoice(displayMetrics, handler, mContext, message, ll_voice_info, pb_outgoing, rl_voice_play);
+                VoiceClickUtil.doPlay(false, mVoiceRecorder, rl_voice_play, iv_audio, voiceFilePath1);
                 break;
         }
     }

@@ -18,6 +18,7 @@ import com.example.administrator.myapplication.BluetoothChat.config.CacheConfig;
 import com.example.administrator.myapplication.main.MyApplication;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -247,7 +248,11 @@ public class VoiceRecorder {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
         try {
-            mediaPlayer.setDataSource(filePath);
+            // 单独使用此方法会报错播放错误:setDataSourceFD failed.: status=0x80000000
+            // mediaPlayer.setDataSource(filePath);
+            // 因此采用此方式会避免这种错误
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            mediaPlayer.setDataSource(fis.getFD());
             mediaPlayer.prepare();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 

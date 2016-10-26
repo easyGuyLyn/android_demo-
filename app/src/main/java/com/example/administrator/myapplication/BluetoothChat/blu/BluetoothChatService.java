@@ -487,7 +487,7 @@ public class BluetoothChatService {
                 try {
                     SystemClock.sleep(1000);//解决数据分类问题
                     availableBytes = mmInStream.available();
-                    TLogUtils.d("lyn_availableBytes", availableBytes + "");
+                //    TLogUtils.d("lyn_availableBytes", availableBytes + "");
                     if (availableBytes > 0) {
                         // Read from the InputStream
                         buffer = new byte[availableBytes];

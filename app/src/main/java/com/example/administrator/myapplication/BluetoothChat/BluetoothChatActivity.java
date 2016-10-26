@@ -201,7 +201,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         mLocalDeviceName = mBluetoothAdapter.getName();
         mChatService = new BluetoothChatService(this, mHandler);
         rv_speech.setLayoutManager(new GridLayoutManager(this, 1));
-        speechAdapter = new ChatAdapter(this, mData, mLocalDeviceName,voiceRecorder);
+        speechAdapter = new ChatAdapter(this, mData, mLocalDeviceName, voiceRecorder);
         rv_speech.setAdapter(speechAdapter);
     }
 
@@ -234,13 +234,13 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     }
                     addMsg(beanWrite);
                     et_sendmessage.setText("");
-                    rv_speech.scrollToPosition(mData.size() - 1);
                     waitDialog.dismiss();
                     break;
                 case MESSAGE_READ: //成功读取消息后的回调
                     byte[] readBuf = (byte[]) msg.obj;
                     String deviceName = msg.getData().getString(DEVICE_NAME);
                     String readMessage = new String(readBuf, 0, msg.arg1);
+                    TLogUtils.d("json_readMessage", readMessage);
                     BluChatMsgBean beanRead = GsonUtil.GsonToBean(readMessage, BluChatMsgBean.class);
                     if (beanRead == null) {
                         return;
