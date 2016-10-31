@@ -123,10 +123,6 @@ public class VoiceRecorder {
                                 msg.what = BluetoothChatActivity.VOICE_LONG;
                                 voice_duration = 0;
                                 handler.sendMessage(msg);
-                            } else {
-                                msg.arg1 = MAX_DURATION - voice_duration;
-                                msg.what = BluetoothChatActivity.VOICE_TIP;
-                                handler.sendMessage(msg);
                             }
                         }
                         Thread.sleep(1000);

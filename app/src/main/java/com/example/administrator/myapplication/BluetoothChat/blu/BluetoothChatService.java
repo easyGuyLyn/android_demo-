@@ -37,6 +37,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.administrator.myapplication.BluetoothChat.BluetoothChatActivity;
+import com.example.administrator.myapplication.BluetoothChat.tools.GetBytesWithHeadInfoUtil;
 
 import utils.TLogUtils;
 
@@ -247,9 +248,8 @@ public class BluetoothChatService {
      * Write to the ConnectedThread in an unsynchronized manner
      *
      * @param out The bytes to write
-     * @see ConnectedThread#write(byte[])
      */
-    public void write(byte[] out) {
+    public void write(String json, byte[] out) {
         // Create temporary object
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
@@ -258,7 +258,7 @@ public class BluetoothChatService {
             r = mConnectedThread;
         }
         // Perform the write unsynchronized
-        r.write(out);
+        r.write(json, out);
     }
 
     /**
@@ -483,31 +483,28 @@ public class BluetoothChatService {
             int bytes;
             int availableBytes = 0;//解决buffer被覆盖的问题
             // Keep listening to the InputStream while connected
-            while (true) {
-                try {
-                    SystemClock.sleep(1000);//解决数据分类问题
-                    availableBytes = mmInStream.available();
-                //    TLogUtils.d("lyn_availableBytes", availableBytes + "");
-                    if (availableBytes > 0) {
-                        // Read from the InputStream
-                        buffer = new byte[availableBytes];
-                        bytes = mmInStream.read(buffer);
 
-                        if (bytes > 0) {
-                            Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ);
-                            Bundle bundle = new Bundle();
-                            bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
-                            msg.arg1 = bytes;
-                            msg.obj = buffer;
-                            msg.setData(bundle);
-                            mHandler.sendMessage(msg);
-                        }
+            int headLength;
+            byte[] headBytes_ = new byte[GetBytesWithHeadInfoUtil.HEADLENGTH];//包头的缓冲
+            try {
+                while ((headLength = mmInStream.read(headBytes_)) != -1) {
+                    int contentLength = Integer.parseInt(new String(headBytes_, 0, headLength).trim());
+                    byte[] contentBytes_ = new byte[contentLength];
+                    int temp = mmInStream.read(contentBytes_);
+                    while (temp < contentLength) {
+                        temp += mmInStream.read(contentBytes_, temp, contentLength - temp);
                     }
-                } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
-                    connectionLost(mmSocket);
-                    break;
+
+                    Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_READ);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
+                    msg.arg1 = contentLength;
+                    msg.obj = contentBytes_;
+                    msg.setData(bundle);
+                    mHandler.sendMessage(msg);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -516,14 +513,14 @@ public class BluetoothChatService {
          *
          * @param buffer The bytes to write
          */
-        public void write(byte[] buffer) {
+        public void write(String json, byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
                 mmOutStream.flush();
                 Message msg = mHandler.obtainMessage(BluetoothChatActivity.MESSAGE_WRITE);
                 Bundle bundle = new Bundle();
                 bundle.putString(BluetoothChatActivity.DEVICE_NAME, mmSocket.getRemoteDevice().getName());
-                msg.obj = buffer;
+                msg.obj = json.getBytes();
                 msg.setData(bundle);
                 mHandler.sendMessage(msg);
             } catch (IOException e) {

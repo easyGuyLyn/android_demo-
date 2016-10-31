@@ -14,7 +14,7 @@ import utils.ToastUtils;
  * Created by Administrator on 2016/10/26.
  */
 
-public class VoiceClickUtil {
+public class VoiceClickPlayUtil {
 
     public static void doPlay(final Boolean isSend, final VoiceRecorder mVoiceRecorder, RelativeLayout rl_voice_play, final ImageView iv_audio, final String finalVoicePath) {
 

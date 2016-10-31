@@ -1,22 +1,17 @@
 package com.example.administrator.myapplication.BluetoothChat.tools;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.example.administrator.myapplication.BluetoothChat.config.CacheConfig;
 import com.example.administrator.myapplication.BluetoothChat.model.BluChatMsgBean;
-import com.example.administrator.myapplication.R;
 
 import java.io.File;
 import java.util.Date;
@@ -24,13 +19,12 @@ import java.util.Date;
 import utils.Base64Utils;
 import utils.FileUtil;
 import utils.ThreadUtils;
-import utils.ToastUtils;
 
 /**
  * Created by Administrator on 2016/10/19.
  */
 
-public class ChatVoiceUtil {
+public class GetVoiceFilePathUtil {
 
     public static final String EXTENSION = ".amr";
 
