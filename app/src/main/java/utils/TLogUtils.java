@@ -15,7 +15,7 @@ public class TLogUtils {
 
 
     /**
-     * 普通log
+     * 红色log
      *
      * @param tag
      * @param message
@@ -26,4 +26,12 @@ public class TLogUtils {
         }
     }
 
+    /**
+     * 普通log
+     */
+    public static void i(String tag, String message) {
+        if (D) {
+            Log.i(tag, message);
+        }
+    }
 }

@@ -194,6 +194,7 @@
             android:name=".BluetoothChat.BluetoothChatActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="蓝牙聊天"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden">

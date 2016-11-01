@@ -8,9 +8,9 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -19,6 +19,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -50,13 +51,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import utils.Base64Utils;
+import utils.BaseActivity;
 import utils.CommonUtils;
 import utils.GsonUtil;
 import utils.TLogUtils;
 import utils.ThreadUtils;
 import utils.ToastUtils;
 
-public class BluetoothChatActivity extends AppCompatActivity {
+public class BluetoothChatActivity extends BaseActivity {
     // Debugging
     private static final String TAG = "BluetoothChat";
     // Message types sent from the BluetoothChatService Handler
@@ -138,19 +140,23 @@ public class BluetoothChatActivity extends AppCompatActivity {
     private Boolean isDestroyed = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setBackgroundDrawable(null);
+    public void setContentView() {
         setContentView(R.layout.activity_bluetooth_chat);
-        ButterKnife.bind(this);
-        initView();
+    }
+
+    @Override
+    public void initData() {
+        init();
+    }
+
+    @Override
+    public void setListener() {
         initListener();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e(TAG, "++ ON START ++");
         if (!mBluetoothAdapter.isEnabled()) {
             //提示用户打开；
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -164,11 +170,22 @@ public class BluetoothChatActivity extends AppCompatActivity {
         }
     }
 
-    private void initView() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mChatService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
+                // Start the Bluetooth chat services
+                mChatService.start();
+            }
+        }
+    }
+
+    private void init() {
         toolbar.setTitle(getString(R.string.BluTittle));
         toolbar.setSubtitle(getString(R.string.notConnect));
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_back);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             ToastUtils.showMsg(getString(R.string.Bluetoothisnotavailable));
@@ -309,8 +326,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
 
     private void ensureDiscoverable() {//重新搜索设备
         Log.d(TAG, "ensure discoverable");
-        if (mBluetoothAdapter.getScanMode() !=
-                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+        if (mBluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
             Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivity(discoverableIntent);
@@ -354,12 +370,6 @@ public class BluetoothChatActivity extends AppCompatActivity {
     }
 
     public void initListener() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         rv_speech.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -487,7 +497,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
         if (message.length() > 0) {
             BluChatMsgBean bcmr = new BluChatMsgBean("1", mConnectedDeviceName, message, System.currentTimeMillis() + "", mLocalDeviceName);
             String json = GsonUtil.GsonString(bcmr);
-            mChatService.write(json,GetBytesWithHeadInfoUtil.getByteArry(json));
+            mChatService.write(json, GetBytesWithHeadInfoUtil.getByteArry(json));
         }
     }
 
@@ -512,7 +522,7 @@ public class BluetoothChatActivity extends AppCompatActivity {
                     sendBean.setFilePath(voiceFilePath);
                     sendBean.setVoiceLength(length + "");
                     String json = GsonUtil.GsonString(sendBean);
-                    mChatService.write(json,GetBytesWithHeadInfoUtil.getByteArry(json));
+                    mChatService.write(json, GetBytesWithHeadInfoUtil.getByteArry(json));
                 }
             }
         });
@@ -561,6 +571,29 @@ public class BluetoothChatActivity extends AppCompatActivity {
         super.onDestroy();
         isDestroyed = true;
         if (mChatService != null) mChatService.stop();
-        ButterKnife.unbind(this);
+    }
+
+    /**
+     * 主页面 ,重写 onKeyDown方法
+     */
+    private long exitTime = 0;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            //两秒之内按返回键就会退出
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                //这里使用home键，永远只是调到后台而已 ，不finish
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //如果是服务里调用，必须加入new task标识
+                intent.addCategory(Intent.CATEGORY_HOME);
+                startActivity(intent);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

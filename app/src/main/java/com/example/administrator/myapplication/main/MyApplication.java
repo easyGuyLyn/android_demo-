@@ -7,6 +7,7 @@ import android.app.Application;
 import com.example.administrator.myapplication.mvcHelper.mvc.MVCHelper;
 
 import utils.CrashHandler;
+import utils.TLogUtils;
 import utils.view.MyLoadViewFactory;
 
 public class MyApplication extends Application {
@@ -21,6 +22,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        //设置Log开关
+        TLogUtils.D = true;
         //初始化XUtils3
         x.Ext.init(this);
         //设置debug模式
